@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.product.mapper.LikeMapper">
+	<insert id="insertLike" parameterType="LikeVO">
+		INSERT INTO `like` ( member_id, 
+						   product_id )
+				  VALUES ( #{memberId},
+				  		   #{productId} )
+	</insert>
+	
+	<select id="selectLike" resultType="LikeVO">
+		SELECT 	*
+		FROM 	`like`l 
+		JOIN 	product p 
+		ON 		l.product_id = p.product_id
+		JOIN 	image i 
+		ON 		p.product_id = i.product_id 
+		WHERE 	l.member_id = #{memberId} 
+		AND 	i.main = 'Y'
+	</select>
+	
+	<delete id="deleteLike" parameterType="LikeVO">
+		DELETE FROM `like`
+		WHERE	product_id = #{productId}
+		AND		member_id = #{memberId}
+	</delete>
+	
+</mapper>

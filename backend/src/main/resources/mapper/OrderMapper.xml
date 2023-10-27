@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.product.mapper.OrderMapper">
+	<select id="selectAddr" resultType="AddressVO">
+		SELECT 	*
+		FROM 	address a 
+		JOIN 	member m
+		ON 		a.member_id = m.member_id
+		WHERE 	m.member_id = #{memberId}
+	</select>
+	
+	<select id="selectAddrInfo" resultType="AddressVO">
+		SELECT 	*
+		FROM 	address
+		WHERE 	addr_id = #{addrId}
+	</select>
+	
+	<select id="selectCartProduct" resultType="CartVO">
+		SELECT 	*
+		FROM 	cart c JOIN product p 
+		ON 		c.product_id = p.product_id
+		JOIN	image i ON p.product_id = i.product_id
+		WHERE 	c.product_id = #{productId}
+		AND 	c.member_id = #{memberId}
+		AND		i.main = 'Y'
+	</select>
+	
+	<insert id="insertOrder" parameterType="OrderVO"  useGeneratedKeys="true" keyColumn="orderId" keyProperty="orderId">
+		INSERT INTO `order` ( member_id, 
+							name,
+							addr,
+							addr_detail,
+							phone,
+							zipcode,
+							req,
+							price,
+							payment_method )
+				   VALUES ( #{memberId},
+				   			#{name},
+				   			#{addr},
+				   			#{addrDetail},
+				   			#{phone},
+				   			#{zipcode},
+				   			#{req},
+				   			#{price},
+				   			#{paymentMethod} )
+	</insert>
+	
+	<insert id="insertOrderDetail" parameterType="OrderVO">
+			INSERT INTO orderdetail ( order_id, 
+									  product_id,
+									  price,
+									  cnt )
+						   VALUES ( #{orderId},
+						   			#{productId},
+						   			#{price},
+						   			#{cnt} );
+						   			
+			DELETE FROM cart
+		  	WHERE 	product_id = #{productId}
+		  	AND		member_id = #{memberId};
+	</insert>
+	
+	<select id="selectOrderList" resultType="OrderVO">
+		SELECT 	o.order_id,
+				date_format(o.rdate,'%Y-%m-%d') as rdate,
+				od.price,
+				od.cnt,
+				od.product_id,
+				p.name,
+				i.img
+		FROM 	`order` o 
+		JOIN 	orderdetail od
+		ON 		o.order_id = od.order_id
+		JOIN 	product p 
+		ON 		od.product_id = p.product_id
+		JOIN 	image i 
+		ON 		p.product_id = i.product_id
+		WHERE 	o.member_id = #{memberId}
+		AND 	i.main = 'Y';
+	</select>
+	
+	<insert id="insertAddr" parameterType="AddressVO">
+		INSERT INTO address ( member_id,
+							  name,
+							  zipcode,
+							  addr,
+							  addr_detail,
+							  phone,
+							  addr_name )
+					VALUES  ( #{memberId},
+							  #{name},
+							  #{zipcode},
+							  #{addr},
+							  #{addrDetail},
+							  #{phone},
+							  #{addrName} )
+	</insert>
+	
+</mapper>
