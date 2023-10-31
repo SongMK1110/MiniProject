@@ -9,7 +9,9 @@
       </template>
       <template v-else>
         <button @click="logout">로그아웃</button>
-        <div>마이페이지</div>
+        <router-link :to="{ name: 'MyPageView', query: { id: userId } }">
+          <div>마이페이지</div>
+        </router-link>
         <router-link :to="{ name: 'LikeView', query: { id: userId } }">
           <div>좋아요</div>
         </router-link>

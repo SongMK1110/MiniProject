@@ -47,7 +47,7 @@ public class CartController {
 	@PostMapping("deleteCart")
 	@ResponseBody
 	public String deleteCart(@RequestBody CartVO vo, Authentication authentication) {
-		
+
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
 		int result = cartService.removeCart(vo);
 
@@ -57,17 +57,29 @@ public class CartController {
 			return "fail";
 		}
 	}
-	
+
 	@PostMapping("cartCheck")
 	@ResponseBody
 	public String cartCheck(@RequestBody CartVO vo, Authentication authentication) {
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
 		int result = cartService.cartCheck(vo);
-		
-		if(result > 0) {
+
+		if (result > 0) {
 			return "duplication";
 		} else {
 			return "success";
+		}
+	}
+
+	@PostMapping("updateCart")
+	@ResponseBody
+	public String updateCart(@RequestBody CartVO vo) {
+		int result = cartService.modifyCart(vo);
+
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
 		}
 	}
 }

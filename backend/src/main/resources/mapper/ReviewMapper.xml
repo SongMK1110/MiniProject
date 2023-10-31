@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.product.mapper.ReviewMapper">
-  <select id="selectReviewProduct" resultType="ProductVO">
+	<select id="selectReviewProduct" resultType="ProductVO">
   	SELECT 	*
 	FROM 	product p 
 	JOIN 	image i 
 	ON 		p.product_id = i.product_id
 	WHERE 	p.product_id = #{productId}
 	AND 	i.main = 'Y'
-  </select>
+	</select>
 
-  <insert id="insertReview" parameterType="ReviewVO">
+	<insert id="insertReview" parameterType="ReviewVO">
   	INSERT INTO review ( product_id,
   						 member_id,
   						 content,
@@ -32,26 +32,71 @@
   						 #{thickness},
   						 #{delivery},
   						 #{packaging} )
-  </insert>
+	</insert>
 
-  <select id="selectReviewList" resultType="ReviewVO">
+	<select id="selectReviewList" resultType="ReviewVO">
   	SELECT 	*
   	FROM	review
   	WHERE	member_id = #{memberId}
-  </select>
-  
-  <select id="selectReviewProductDetail" resultType="ReviewVO">
+	</select>
+
+	<select id="selectReviewProductDetail" resultType="ReviewVO">
   	SELECT 	*
   	FROM	review r
   	JOIN	`member` m
   	ON		r.member_id = m.member_id
   	WHERE	product_id = #{productId}
-  </select>
-  
-  <select id="selectReviewRateAvg" resultType="double">
+	</select>
+
+	<select id="selectReviewRateAvg" resultType="double">
   	SELECT 	AVG(rate) as avg
 	FROM 	review
 	WHERE 	product_id = #{productId}
-  </select>
-  
+	</select>
+
+	<insert id="insertReviewComment" parameterType="ReviewVO" useGeneratedKeys="true" keyColumn="commentId" keyProperty="commentId">
+  	INSERT INTO comment ( review_id,
+  						  member_id,
+  						  content )
+  				VALUES  ( #{reviewId},
+  						  #{memberId},
+  						  #{content} )
+	</insert>
+
+	<select id="selectReviewComment" resultType="ReviewVO">
+  	SELECT	c.comment_id,
+  			c.review_id,
+  			c.member_id,
+  			c.content,
+  			date_format(c.rdate,'%Y-%m-%d %T') as rdate,
+  			m.name
+  	FROM 	comment c 
+  	JOIN 	`member` m 
+	ON 		c.member_id = m.member_id
+	</select>
+
+
+	<select id="selectOneReviewComment" resultType="ReviewVO">
+  	SELECT	c.comment_id,
+  			c.review_id,
+  			c.member_id,
+  			c.content,
+  			date_format(c.rdate,'%Y-%m-%d %T') as rdate,
+  			m.name
+  	FROM 	comment c 
+  	JOIN 	`member` m 
+	ON 		c.member_id = m.member_id
+	WHERE	c.comment_id = #{commentId}
+	</select>
+
+	<delete id="deleteReviewComment" parameterType="ReviewVO">
+  	DELETE FROM comment
+  	WHERE comment_id = #{commentId}
+	</delete>
+
+	<update id="updateReviewComment" parameterType="ReviewVO">
+  	UPDATE 	comment
+  	SET		content = #{content}
+  	WHERE	comment_id = #{commentId}
+	</update>
 </mapper>

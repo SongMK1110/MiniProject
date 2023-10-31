@@ -33,4 +33,9 @@ public class CartServiceImpl implements CartService {
 	public int cartCheck(CartVO vo) {
 		return cartMapper.cartCheck(vo);
 	}
+
+	@Override
+	public int modifyCart(CartVO vo) {
+		return cartMapper.updateCart(vo);
+	}
 }

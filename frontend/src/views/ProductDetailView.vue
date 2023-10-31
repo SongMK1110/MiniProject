@@ -95,6 +95,27 @@
             ></label>
           </fieldset>
           <div class="review-content">{{ review.content }}</div>
+          <label for="">댓글: </label><input type="text" v-model="review.reviewComment" />
+          <button type="button" @click="insertComment(review.reviewId)">등록</button>
+          <div class="comment-list" v-for="(comment, i) in reviewCommentList" :key="i">
+            <div class="comment" v-if="comment.reviewId === review.reviewId">
+              <div v-if="editingCommentId === comment.commentId">
+                <div class="comment-author">작성자: {{ comment.name }}</div>
+                <textarea v-model="reviewComment"></textarea>
+                <div class="comment-date">작성일: {{ comment.rdate }}</div>
+                <button @click="saveEditedComment(comment.commentId)">저장</button>
+              </div>
+              <div v-else>
+                <div class="comment-author">작성자: {{ comment.name }}</div>
+                <div class="comment-content">내용: {{ comment.content }}</div>
+                <div class="comment-date">작성일: {{ comment.rdate }}</div>
+                <div v-if="comment.memberId === parseInt(userId)">
+                  <button @click="updateComment(comment.commentId, comment.content)">수정</button>
+                  <button @click="deleteComment(comment.commentId)">삭제</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -123,6 +144,16 @@ interface Review {
   memberId: number
   content: string
   rate: number
+  name: string
+  reviewComment: string
+}
+
+interface Comment {
+  commentId: number
+  reviewId: number
+  memberId: number
+  content: string
+  rdate: string
   name: string
 }
 
@@ -161,6 +192,8 @@ export default {
     const totalPrice = ref('')
     const liked = ref(false)
     const averageRate = ref(0)
+    const reviewComment = ref<string>('')
+    const reviewCommentList = ref<Comment[]>([])
 
     const reviewList = ref<Review[]>([])
 
@@ -303,6 +336,88 @@ export default {
       .catch((error) => {
         console.log(error)
       })
+
+    const insertComment = (reviewId: number) => {
+      const review = reviewList.value.find((item) => item.reviewId === reviewId)
+      const confirmed = window.confirm('등록하시겠습니까?')
+      if (confirmed) {
+        axios
+          .post('api/insertReviewComment', { reviewId: reviewId, content: review?.reviewComment })
+          .then((res) => {
+            reviewCommentList.value.push(res.data)
+            if (review && review.reviewComment !== undefined) {
+              review.reviewComment = ''
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    }
+
+    axios
+      .get('api/selectReviewComment')
+      .then((res) => {
+        // console.log(res.data)
+        reviewCommentList.value = res.data
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    const deleteComment = (commentId: number) => {
+      const confirmed = window.confirm('삭제하시겠습니까?')
+      if (confirmed) {
+        axios
+          .post('api/deleteComment', { commentId: commentId, memberId: userId })
+          .then((res) => {
+            if (res.data === 'success') {
+              reviewCommentList.value = reviewCommentList.value.filter(
+                (comment) => comment.commentId !== commentId
+              )
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    }
+
+    const editingCommentId = ref<number>()
+
+    const updateComment = (commentId: number, content: string) => {
+      editingCommentId.value = commentId
+      reviewComment.value = content
+    }
+
+    const saveEditedComment = (commentId: number) => {
+      const editedContent = reviewComment.value
+      const confirmed = window.confirm('수정하시겠습니까?')
+
+      if (confirmed) {
+        axios
+          .post('api/updateComment', {
+            commentId: commentId,
+            content: editedContent,
+            memberId: userId
+          })
+          .then((res) => {
+            if (res.data === 'success') {
+              editingCommentId.value = -1
+              const index = reviewCommentList.value.findIndex(
+                (comment) => comment.commentId === commentId
+              )
+              if (index !== -1) {
+                reviewCommentList.value[index].content = editedContent
+              }
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    }
+
     return {
       product,
       imgList,
@@ -321,7 +436,14 @@ export default {
       liked,
       addCommas,
       reviewList,
-      averageRate
+      averageRate,
+      insertComment,
+      reviewComment,
+      reviewCommentList,
+      deleteComment,
+      updateComment,
+      editingCommentId,
+      saveEditedComment
     }
   }
 }
@@ -407,5 +529,39 @@ export default {
 
 .review-content {
   margin-top: 10px;
+  padding-bottom: 20px;
+}
+
+#comment {
+  margin-bottom: 10px;
+}
+
+/* 댓글 목록 스타일 */
+.comment-list {
+  margin-top: 10px;
+}
+
+.comment {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-content {
+  margin-top: 5px;
+}
+
+.comment-date {
+  font-size: 12px;
+  color: #777;
+}
+
+button {
+  margin: 5px;
 }
 </style>

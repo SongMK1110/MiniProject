@@ -40,4 +40,30 @@ public class ReviewServiceImpl implements ReviewService {
 		return reviewMapper.selectReviewRateAvg(productId);
 	}
 
+	@Override
+	public ReviewVO addReviewComment(ReviewVO vo) {
+		int result = reviewMapper.insertReviewComment(vo);
+		if (result > 0) {
+			return reviewMapper.selectOneReviewComment(vo);
+		} else {
+			return null;
+		}
+
+	}
+
+	@Override
+	public List<ReviewVO> getReviewComment() {
+		return reviewMapper.selectReviewComment();
+	}
+
+	@Override
+	public int removeReviewComment(ReviewVO vo) {
+		return reviewMapper.deleteReviewComment(vo);
+	}
+
+	@Override
+	public int modifyReviewComment(ReviewVO vo) {
+		return reviewMapper.updateReviewComment(vo);
+	}
+
 }

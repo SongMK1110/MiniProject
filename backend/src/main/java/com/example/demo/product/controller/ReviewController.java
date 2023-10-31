@@ -3,6 +3,7 @@ package com.example.demo.product.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,27 +22,26 @@ import com.example.demo.product.vo.ReviewVO;
 public class ReviewController {
 	@Autowired
 	ReviewService reviewService;
-	
+
 	@GetMapping("reviewProduct")
 	@ResponseBody
 	public ProductVO reviewProduct(@RequestParam int productId) {
 		return reviewService.getReviewProduct(productId);
 	}
-	
+
 	@PostMapping("insertReview")
 	@ResponseBody
 	public String insertReview(@RequestBody ReviewVO vo, Authentication authentication) {
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
-		
-		
+
 		int result = reviewService.addReview(vo);
-		if(result > 0) {
+		if (result > 0) {
 			return "success";
 		} else {
 			return "fail";
 		}
 	}
-	
+
 	@GetMapping("selectReview")
 	@ResponseBody
 	public List<ReviewVO> selectReview(Authentication authentication) {
@@ -49,18 +49,60 @@ public class ReviewController {
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
 		return reviewService.getReviewList(vo);
 	}
-	
+
 	@GetMapping("reviewProductDetail")
 	@ResponseBody
-	public List<ReviewVO> reviewProductDetail(@RequestParam int productId){
+	public List<ReviewVO> reviewProductDetail(@RequestParam int productId) {
 		return reviewService.getReviewProductDetail(productId);
 	}
-	
+
 	@GetMapping("reviewRateAvg")
 	@ResponseBody
 	public double reviewRateAvg(@RequestParam int productId) {
 		return reviewService.getReviewRateAvg(productId);
 	}
-	
-	
+
+	@PostMapping("insertReviewComment")
+	@ResponseBody
+	public ReviewVO insertReviewCommnet(@RequestBody ReviewVO vo, Authentication authentication) {
+		vo.setMemberId(Integer.parseInt(authentication.getName()));
+
+		return reviewService.addReviewComment(vo);
+
+	}
+
+	@GetMapping("selectReviewComment")
+	@ResponseBody
+	public List<ReviewVO> selectReviewComment() {
+		return reviewService.getReviewComment();
+	}
+
+	@PostMapping("deleteComment")
+	@ResponseBody
+	public String deleteComment(@RequestBody ReviewVO vo, Authentication authentication) {
+		if (vo.getMemberId() != Integer.parseInt(authentication.getName())) {
+			throw new AccessDeniedException("error");
+		}
+		int result = reviewService.removeReviewComment(vo);
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+	}
+
+	@PostMapping("updateComment")
+	@ResponseBody
+	public String updateComment(@RequestBody ReviewVO vo, Authentication authentication) {
+		if (vo.getMemberId() != Integer.parseInt(authentication.getName())) {
+			throw new AccessDeniedException("error");
+		}
+		int result = reviewService.modifyReviewComment(vo);
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+	}
+
 }

@@ -41,7 +41,7 @@ public class AuthenticationConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
-//                		.requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
+                		//.requestMatchers(new AntPathRequestMatcher("/resources/**")).permitAll()
 //                		.requestMatchers(new AntPathRequestMatcher("/favicon.ico")).permitAll()
 //                		.requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
 //                		.requestMatchers(new AntPathRequestMatcher("/")).permitAll()
@@ -50,7 +50,6 @@ public class AuthenticationConfig {
 //                		.requestMatchers(new AntPathRequestMatcher("/login")).permitAll()
 //                		.requestMatchers(new AntPathRequestMatcher("/productDetail")).permitAll()
 //                		.requestMatchers(new AntPathRequestMatcher("/signForm")).permitAll()
-//                		.requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                 		.requestMatchers(new AntPathRequestMatcher("/api/login")).permitAll()
                 		.requestMatchers(new AntPathRequestMatcher("/api/productList")).permitAll()
                 		.requestMatchers(new AntPathRequestMatcher("/api/productDetail")).permitAll()

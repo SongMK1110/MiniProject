@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.member.vo.MemberVO;
 import com.example.demo.product.mapper.CartMapper;
 import com.example.demo.product.mapper.OrderMapper;
 import com.example.demo.product.service.OrderService;
@@ -13,10 +14,10 @@ import com.example.demo.product.vo.CartVO;
 import com.example.demo.product.vo.OrderVO;
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderServiceImpl implements OrderService {
 	@Autowired
 	OrderMapper orderMapper;
-	
+
 	@Autowired
 	CartMapper cartMapper;
 
@@ -53,5 +54,10 @@ public class OrderServiceImpl implements OrderService{
 	@Override
 	public int addAddr(AddressVO vo) {
 		return orderMapper.insertAddr(vo);
+	}
+
+	@Override
+	public MemberVO getReserves(MemberVO vo) {
+		return orderMapper.selectReserves(vo);
 	}
 }

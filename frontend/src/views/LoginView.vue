@@ -28,9 +28,10 @@ export default {
       axios
         .post('/api/login', { id: id.value, pw: password.value })
         .then((response) => {
-          console.log(response)
           if (response.data === 'fail') {
             alert('아이디 또는 비밀번호가 잘못 되었습니다.')
+            id.value = ''
+            password.value = ''
             return
           }
 

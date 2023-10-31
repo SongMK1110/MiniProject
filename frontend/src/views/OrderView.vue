@@ -96,6 +96,11 @@
         </table>
       </fieldset>
       <fieldset>
+        <legend>적립금 할인</legend>
+        적립금 사용: <input type="text" v-model="useReserves" /> 현재 적립금 :
+        <span v-if="reservesInfo">{{ reservesInfo.reserves }}</span>
+      </fieldset>
+      <fieldset>
         <legend>결제 정보</legend>
         <label style="padding-right: 10px"
           ><input
@@ -130,7 +135,7 @@
             background-color: black;
           "
         >
-          {{ addCommas(getTotalPrice) }}원 결제하기
+          {{ addCommas(getTotalPrice - useReserves) }}원 결제하기
         </button>
       </div>
     </form>
@@ -138,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import router from '@/router'
@@ -197,6 +202,8 @@ export default {
     const name = ref('')
     const addrName = ref('')
     const phone = ref('')
+    const reservesInfo = ref<{ reserves: number }>()
+    const useReserves = ref(0)
 
     axios
       .get('/api/selectAddrList')
@@ -264,7 +271,7 @@ export default {
             phone: addrInfo.value.phone,
             zipcode: addrInfo.value.zipcode,
             req: req.value,
-            price: getTotalPrice.value,
+            price: getTotalPrice.value - useReserves.value,
             paymentMethod: payMethod.value
           }
 
@@ -319,7 +326,6 @@ export default {
     const openPostcode = () => {
       new window.daum.Postcode({
         oncomplete: (data: any) => {
-          // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분
           zonecode.value = data.zonecode
           roadAddress.value = data.roadAddress
         }
@@ -371,14 +377,22 @@ export default {
       console.log(data)
     }
 
-    // axios
-    //   .get('/api/selectAddrList', {})
-    //   .then((response) => {
-    //     addrList.value = response.data
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+    axios
+      .get('/api/selectReserves')
+      .then((response) => {
+        console.log(response)
+        reservesInfo.value = response.data
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    watch(useReserves, (newValue) => {
+      if (reservesInfo.value !== undefined && newValue > reservesInfo.value.reserves) {
+        alert('현재 적립금보다 많이 사용할 수 없습니다.')
+        useReserves.value = 0
+      }
+    })
 
     return {
       addrList,
@@ -399,7 +413,9 @@ export default {
       addrName,
       phone,
       saveAddr,
-      addCommas
+      addCommas,
+      reservesInfo,
+      useReserves
     }
   }
 }
@@ -425,7 +441,7 @@ export default {
   display: flex;
   /* align-items: center; */
   text-align: center;
-  width: 1150px;
+  width: 90%;
   /* height: 100%; */
   /* background-color: rgba(0, 0, 0, 0.432); */
   position: fixed;

@@ -12,7 +12,8 @@
       </div>
       <div class="right" v-if="selectedCategory !== ''">
         <h2>{{ selectedCategory }} 상품 리스트</h2>
-        <ul class="product-list">
+        <ProductList :productList="productList" />
+        <!-- <ul class="product-list">
           <li v-for="product in productList" :key="product.productId">
             <router-link :to="{ name: 'productDetailView', query: { id: product.productId } }">
               <img :src="getImageUrl(product.img)" style="width: 200px" /><br />
@@ -23,7 +24,7 @@
               <div class="product-price">{{ addCommas(product.price) }}원</div>
             </div>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </div>
   </div>
@@ -32,6 +33,7 @@
 <script lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
+import ProductList from '../components/ProductList.vue'
 
 interface Product {
   productId: number
@@ -43,9 +45,9 @@ interface Product {
   img: string
 }
 
-function getImageUrl(name: string) {
-  return new URL(`/src/assets/images/${name}`, import.meta.url).href
-}
+// function getImageUrl(name: string) {
+//   return new URL(`/src/assets/images/${name}`, import.meta.url).href
+// }
 
 function parseJwt(token: string | null): string | null {
   if (token !== null) {
@@ -66,15 +68,18 @@ function parseJwt(token: string | null): string | null {
 }
 
 export default {
+  components: {
+    ProductList
+  },
   setup() {
     const selectedCategory = ref('')
     const productList = ref<Product[]>([])
     const token = localStorage.getItem('token')
     const parseToken = parseJwt(token)
 
-    const addCommas = (num: number) => {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    }
+    // const addCommas = (num: number) => {
+    //   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    // }
 
     const showProducts = async (category: string) => {
       selectedCategory.value = category
@@ -100,11 +105,11 @@ export default {
       selectedCategory,
       productList,
       showProducts,
-      getImageUrl,
+      // getImageUrl,
       parseJwt,
       token,
-      parseToken,
-      addCommas
+      parseToken
+      // addCommas
     }
   }
 }

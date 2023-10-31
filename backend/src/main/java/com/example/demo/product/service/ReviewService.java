@@ -22,4 +22,15 @@ public interface ReviewService {
 	// 리뷰 전체 평균 별점
 	public double getReviewRateAvg(int productId);
 
+	// 리뷰 댓글 등록
+	public ReviewVO addReviewComment(ReviewVO vo);
+
+	// 리뷰 댓글 조회
+	public List<ReviewVO> getReviewComment();
+
+	// 리뷰 댓글 삭제
+	public int removeReviewComment(ReviewVO vo);
+
+	// 리뷰 댓글 수정
+	public int modifyReviewComment(ReviewVO vo);
 }

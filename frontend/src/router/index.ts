@@ -54,7 +54,19 @@ const router = createRouter({
       path: '/reviewForm',
       name: 'ReviewView',
       component: () => import(/* webpackChunkName: "ReviewView" */ '../views/ReviewView.vue')
+    },
+    {
+      path: '/orderDetail',
+      name: 'OrderDetailView',
+      component: () =>
+        import(/* webpackChunkName: "OrderDetailView" */ '../views/OrderDetailView.vue')
+    },
+    {
+      path: '/mypage',
+      name: 'MyPageView',
+      component: () => import(/* webpackChunkName: "MyPageView" */ '../views/MyPageView.vue')
     }
+
     // {
     //   path: '/logout',
     //   name: 'logout',

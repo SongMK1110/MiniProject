@@ -1,5 +1,20 @@
 <template>
   <div>
+    <div class="black-bg" v-if="modal === true">
+      <div class="white-bg">
+        <button type="button" @click="modal = false" style="float: right">X</button>
+        <h2>수량을 변경 해주세요</h2>
+        <div>
+          <label for="quantity">수량:</label>
+          <button @click="decrementQuantity">-</button>
+          <input type="number" id="quantity" v-model="quantity" readonly />
+          <button @click="incrementQuantity">+</button>
+        </div>
+        <hr />
+        <button type="button" @click="modal = false" style="margin-right: 10px">취소</button>
+        <button type="button" @click="quantityChange">변경</button>
+      </div>
+    </div>
     <h1>장바구니</h1>
     <table>
       <thead>
@@ -27,7 +42,14 @@
           <td>{{ cart.cnt }}개</td>
           <td>{{ addCommas(cart.cnt * cart.price) }}원</td>
           <td class="item-actions">
-            <button @click="delCartBtn(cart.productId, index)">삭제</button>
+            <button
+              type="button"
+              @click="quantityBtn(cart.cnt, cart.cartId)"
+              style="margin-right: 5px"
+            >
+              수량
+            </button>
+            <button type="button" @click="delCartBtn(cart.productId, index)">삭제</button>
           </td>
           <td>
             택배배송 <br />
@@ -105,6 +127,9 @@ export default {
     const totalPrice = ref(0)
     const selectedProducts = ref<Cart[]>([])
     const selectAll = ref(false)
+    const modal = ref(false)
+    const quantity = ref(1)
+    const cartId = ref(0)
 
     const addCommas = (num: number) => {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -114,7 +139,6 @@ export default {
     axios
       .get('/api/cartList')
       .then((response) => {
-        console.log(response.data[0].memberId)
         cartItems.value = response.data
       })
       .catch((error) => {
@@ -164,11 +188,44 @@ export default {
       }
     })
 
-    // 체크박스 전체 선택/해제 상태에 따라 개별 상품의 selected 업데이트
     const toggleAllSelected = () => {
       cartItems.value.forEach((cart) => {
         cart.selected = !selectAll.value
       })
+    }
+
+    // 증가
+    const incrementQuantity = (): void => {
+      quantity.value++
+    }
+
+    // 감소
+    const decrementQuantity = (): void => {
+      if (quantity.value > 1) {
+        quantity.value--
+      }
+    }
+
+    const quantityBtn = (cnt: number, id: number) => {
+      cartId.value = id
+      modal.value = true
+      quantity.value = cnt
+    }
+
+    const quantityChange = () => {
+      const confirmed = window.confirm('변경하시겠습니까?')
+      if (confirmed) {
+        axios
+          .post('api/updateCart', { cartId: cartId.value, cnt: quantity.value })
+          .then((res) => {
+            if (res.data === 'success') {
+              location.reload()
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
     }
 
     return {
@@ -181,7 +238,14 @@ export default {
       orderSelectedProducts,
       selectAll,
       toggleAllSelected,
-      addCommas
+      addCommas,
+      modal,
+      quantity,
+      incrementQuantity,
+      decrementQuantity,
+      quantityBtn,
+      quantityChange,
+      cartId
     }
   }
 }
@@ -218,5 +282,41 @@ th {
 
 td {
   vertical-align: middle;
+}
+.black-bg label {
+  display: block;
+}
+
+.black-bg label span {
+  display: inline-block;
+  text-align: left;
+  width: 150px;
+}
+
+.black-bg {
+  display: flex;
+  /* align-items: center; */
+  text-align: center;
+  width: 90%;
+  /* height: 100%; */
+  /* background-color: rgba(0, 0, 0, 0.432); */
+  position: fixed;
+  padding: 20px;
+}
+
+.white-bg {
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid black;
+}
+
+.modal-exit-btn {
+  margin-top: 30px;
+}
+
+.modal-exit-btn:hover {
+  cursor: pointer;
 }
 </style>

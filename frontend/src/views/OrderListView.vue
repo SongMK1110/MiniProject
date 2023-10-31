@@ -21,7 +21,9 @@
             {{ order.name }}
           </td>
           <td>{{ order.rdate }}</td>
-          <td>{{ order.orderId }}</td>
+          <router-link :to="{ name: 'OrderDetailView', query: { id: order.orderId } }">
+            <td>{{ order.orderId }}</td>
+          </router-link>
           <td>
             {{ addCommas(order.price) }}원 <br />
             {{ order.cnt }}개

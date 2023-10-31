@@ -9,13 +9,13 @@
 		ON 		a.member_id = m.member_id
 		WHERE 	m.member_id = #{memberId}
 	</select>
-	
+
 	<select id="selectAddrInfo" resultType="AddressVO">
 		SELECT 	*
 		FROM 	address
 		WHERE 	addr_id = #{addrId}
 	</select>
-	
+
 	<select id="selectCartProduct" resultType="CartVO">
 		SELECT 	*
 		FROM 	cart c JOIN product p 
@@ -25,8 +25,8 @@
 		AND 	c.member_id = #{memberId}
 		AND		i.main = 'Y'
 	</select>
-	
-	<insert id="insertOrder" parameterType="OrderVO"  useGeneratedKeys="true" keyColumn="orderId" keyProperty="orderId">
+
+	<insert id="insertOrder" parameterType="OrderVO" useGeneratedKeys="true" keyColumn="orderId" keyProperty="orderId">
 		INSERT INTO `order` ( member_id, 
 							name,
 							addr,
@@ -46,7 +46,7 @@
 				   			#{price},
 				   			#{paymentMethod} )
 	</insert>
-	
+
 	<insert id="insertOrderDetail" parameterType="OrderVO">
 			INSERT INTO orderdetail ( order_id, 
 									  product_id,
@@ -61,7 +61,7 @@
 		  	WHERE 	product_id = #{productId}
 		  	AND		member_id = #{memberId};
 	</insert>
-	
+
 	<select id="selectOrderList" resultType="OrderVO">
 		SELECT 	o.order_id,
 				date_format(o.rdate,'%Y-%m-%d') as rdate,
@@ -80,7 +80,7 @@
 		WHERE 	o.member_id = #{memberId}
 		AND 	i.main = 'Y';
 	</select>
-	
+
 	<insert id="insertAddr" parameterType="AddressVO">
 		INSERT INTO address ( member_id,
 							  name,
@@ -97,5 +97,11 @@
 							  #{phone},
 							  #{addrName} )
 	</insert>
-	
+
+	<select id="selectReserves" resultType="MemberVO">
+		SELECT 	reserves
+		FROM	`member`
+		WHERE	member_id = #{memberId}
+	</select>
+
 </mapper>

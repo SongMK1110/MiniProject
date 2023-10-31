@@ -2,6 +2,7 @@ package com.example.demo.product.service;
 
 import java.util.List;
 
+import com.example.demo.member.vo.MemberVO;
 import com.example.demo.product.vo.AddressVO;
 import com.example.demo.product.vo.CartVO;
 import com.example.demo.product.vo.OrderVO;
@@ -27,4 +28,7 @@ public interface OrderService {
 
 	// 주소 등록
 	public int addAddr(AddressVO vo);
+
+	// 적립금 조회
+	public MemberVO getReserves(MemberVO vo);
 }

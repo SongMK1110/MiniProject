@@ -2,35 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.product.mapper.CartMapper">
-  <select id="selectCartList" resultType="CartVO">
+	<select id="selectCartList" resultType="CartVO">
   	SELECT 	*
 	FROM 	cart c JOIN product p 
 	ON 		c.product_id = p.product_id
 	JOIN	image i ON p.product_id = i.product_id
 	WHERE 	c.member_id = #{memberId}
 	AND		i.main = 'Y'
-  </select>
-  
-  <insert id="insertCart" parameterType="CartVO">
+	</select>
+
+	<insert id="insertCart" parameterType="CartVO">
   	INSERT INTO cart ( product_id, 
   					   member_id, 
   					   cnt )
   			  VALUES ( #{productId}, 
   			 		   #{memberId}, 
   			 		   #{cnt})
-  </insert>
+	</insert>
 
-	
-  <delete id="deleteCart" parameterType="CartVO">
+
+	<delete id="deleteCart" parameterType="CartVO">
   	DELETE FROM cart
   	WHERE 	product_id = #{productId}
   	AND		member_id = #{memberId}
-  </delete>
-  
-  <select id="cartCheck" resultType="int">
+	</delete>
+
+	<select id="cartCheck" resultType="int">
   	SELECT 	COUNT(*) as count
   	FROM	cart
   	WHERE	product_id = #{productId}
   	AND		member_id = #{memberId}
-  </select>
+	</select>
+
+	<update id="updateCart" parameterType="CartVO">
+  	UPDATE	cart
+  	SET		cnt = #{cnt}
+  	WHERE	cart_id = #{cartId}
+	</update>
 </mapper>

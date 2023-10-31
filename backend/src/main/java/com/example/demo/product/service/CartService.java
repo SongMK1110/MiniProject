@@ -16,4 +16,7 @@ public interface CartService {
 
 	// 카트 체크
 	public int cartCheck(CartVO vo);
+
+	// 카트 수정
+	public int modifyCart(CartVO vo);
 }

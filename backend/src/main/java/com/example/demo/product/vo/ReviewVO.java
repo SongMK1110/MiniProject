@@ -18,8 +18,11 @@ public class ReviewVO {
 	private int thickness;
 	private int delivery;
 	private int packaging;
-	
+
 	private String name;
 	private double avg;
-	
+
+	private int commentId;
+	private String reviewComment;
+
 }
