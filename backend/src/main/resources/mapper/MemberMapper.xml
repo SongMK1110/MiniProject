@@ -90,7 +90,22 @@
 			<if test="phone != null and !phone.equals('')">
   			phone = #{phone},
 			</if>
+			<if test="img != null and !img.equals('')">
+  			img = #{img},
+			</if>
 		</set>
+  	WHERE 	member_id = #{memberId}
+	</update>
+
+	<update id="reservesPlus" parameterType="OrderVO">
+  	UPDATE	`member`
+	SET		reserves = reserves + #{reservesPlus}
+  	WHERE 	member_id = #{memberId}
+	</update>
+
+	<update id="reservesMinus" parameterType="OrderVO">
+  	UPDATE	`member`
+	SET		reserves = reserves - #{reservesMinus}
   	WHERE 	member_id = #{memberId}
 	</update>
 

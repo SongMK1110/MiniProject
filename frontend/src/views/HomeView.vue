@@ -12,7 +12,7 @@
       </div>
       <div class="right" v-if="selectedCategory !== ''">
         <h2>{{ selectedCategory }} 상품 리스트</h2>
-        <ProductList :productList="productList" />
+        <ProductList :productList="productList" :getImageUrl="getImageUrl" :addCommas="addCommas" />
         <!-- <ul class="product-list">
           <li v-for="product in productList" :key="product.productId">
             <router-link :to="{ name: 'productDetailView', query: { id: product.productId } }">
@@ -45,9 +45,9 @@ interface Product {
   img: string
 }
 
-// function getImageUrl(name: string) {
-//   return new URL(`/src/assets/images/${name}`, import.meta.url).href
-// }
+function getImageUrl(name: string) {
+  return new URL(`/src/assets/images/${name}`, import.meta.url).href
+}
 
 function parseJwt(token: string | null): string | null {
   if (token !== null) {
@@ -77,9 +77,9 @@ export default {
     const token = localStorage.getItem('token')
     const parseToken = parseJwt(token)
 
-    // const addCommas = (num: number) => {
-    //   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    // }
+    const addCommas = (num: number) => {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
 
     const showProducts = async (category: string) => {
       selectedCategory.value = category
@@ -105,11 +105,11 @@ export default {
       selectedCategory,
       productList,
       showProducts,
-      // getImageUrl,
+      getImageUrl,
       parseJwt,
       token,
-      parseToken
-      // addCommas
+      parseToken,
+      addCommas
     }
   }
 }

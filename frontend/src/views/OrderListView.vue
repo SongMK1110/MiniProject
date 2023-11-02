@@ -12,7 +12,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(order, index) in orderList" :key="index" class="cart-item">
+        <OrderList
+          :orderList="orderList"
+          :getImageUrl="getImageUrl"
+          :orderDetail="orderDetail"
+          :addCommas="addCommas"
+          :reviewBtn="reviewBtn"
+          :isReviewWritten="isReviewWritten"
+        />
+        <!-- <tr v-for="(order, index) in orderList" :key="index" class="cart-item">
           <td class="item-info">
             <router-link :to="{ name: 'productDetailView', query: { id: order.productId } }">
               <span><img :src="getImageUrl(order.img)" style="width: 80px" /></span>
@@ -21,9 +29,11 @@
             {{ order.name }}
           </td>
           <td>{{ order.rdate }}</td>
-          <router-link :to="{ name: 'OrderDetailView', query: { id: order.orderId } }">
-            <td>{{ order.orderId }}</td>
-          </router-link>
+          <td>
+            <span @click="orderDetail(order.orderId)" style="cursor: pointer">{{
+              order.orderId
+            }}</span>
+          </td>
           <td>
             {{ addCommas(order.price) }}원 <br />
             {{ order.cnt }}개
@@ -37,7 +47,7 @@
               {{ isReviewWritten(order.productId) ? '후기작성완료' : '후기작성' }}
             </button>
           </td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
   </div>
@@ -47,6 +57,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
+import OrderList from '../components/OrderList.vue'
 
 interface Order {
   productId: number
@@ -64,6 +75,9 @@ function getImageUrl(name: string): string {
 
 export default {
   name: 'OrderListView',
+  components: {
+    OrderList
+  },
   setup() {
     const orderList = ref<Order[]>([])
     const reviewList = ref<number[]>([])
@@ -73,6 +87,10 @@ export default {
 
     const isReviewWritten = (productId: number): boolean => {
       return reviewList.value.includes(productId)
+    }
+
+    const orderDetail = (orderId: number) => {
+      router.push({ name: 'OrderDetailView', query: { orderId: orderId } })
     }
 
     axios
@@ -96,7 +114,15 @@ export default {
     const reviewBtn = (productId: number) => {
       router.push({ name: 'ReviewView', query: { productId: productId } })
     }
-    return { getImageUrl, orderList, addCommas, reviewBtn, reviewList, isReviewWritten }
+    return {
+      getImageUrl,
+      orderList,
+      addCommas,
+      reviewBtn,
+      reviewList,
+      isReviewWritten,
+      orderDetail
+    }
   }
 }
 </script>

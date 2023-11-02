@@ -1,9 +1,14 @@
 <template>
   <div>
     <h1>좋아요</h1>
-
+    <LikeList
+      :cartItems="cartItems"
+      :delCartBtn="delCartBtn"
+      :getImageUrl="getImageUrl"
+      :addCommas="addCommas"
+    />
     <!-- 장바구니 아이템 -->
-    <div v-for="(like, index) in cartItems" :key="index" class="cart-item">
+    <!-- <div v-for="(like, index) in cartItems" :key="index" class="cart-item">
       <div class="item-info">
         <router-link :to="{ name: 'productDetailView', query: { id: like.productId } }">
           <span><img :src="getImageUrl(like.img)" style="width: 80px" /></span>
@@ -14,10 +19,11 @@
       <div class="item-actions">
         <button @click="delCartBtn(like.productId, index)">삭제</button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
+import LikeList from '@/components/LikeList.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -67,7 +73,6 @@ export default {
     //   router.push('/loginForm')
     //   return
     // }
-
     const addCommas = (num: number) => {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
@@ -81,7 +86,6 @@ export default {
       .catch((error) => {
         console.log(error)
       })
-
     const delCartBtn = (productId: number, index: number): void => {
       const confirmed = window.confirm('삭제하시겠습니까?')
       if (confirmed) {
@@ -96,9 +100,9 @@ export default {
         cartItems.value.splice(index, 1)
       }
     }
-
     return { cartItems, userId, token, route, totalPrice, getImageUrl, delCartBtn, addCommas }
-  }
+  },
+  components: { LikeList }
 }
 </script>
 <style scoped>

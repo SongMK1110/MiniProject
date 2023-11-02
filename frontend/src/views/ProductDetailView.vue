@@ -27,7 +27,6 @@
       </button>
       <button @click="addToCart">장바구니</button>
     </div>
-    <!-- 리뷰 전체 평균 별점 -->
     <div class="average-rating">
       <h3>전체 평균 별점</h3>
       <fieldset class="rate">
@@ -52,6 +51,143 @@
         <input type="radio" v-if="averageRate >= 0.5" value="0.5" v-model="averageRate" readonly />
         <label class="half" title="0.5점"></label>
       </fieldset>
+      <div class="statistics">
+        <h3>사이즈 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>커요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: sizeAvg['1'] + '%' }"></div>
+            </div>
+            {{ sizeAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>보통이에요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: sizeAvg['2'] + '%' }"></div>
+            </div>
+            {{ sizeAvg['2'] }}%
+          </div>
+          <div class="rating-option">
+            <span>작아요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: sizeAvg['3'] + '%' }"></div>
+            </div>
+            {{ sizeAvg['3'] }}%
+          </div>
+        </div>
+
+        <h3>밝기 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>밝아요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: brightAvg['1'] + '%' }"></div>
+            </div>
+            {{ brightAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>보통이에요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: brightAvg['2'] + '%' }"></div>
+            </div>
+            {{ brightAvg['2'] }}%
+          </div>
+          <div class="rating-option">
+            <span>어두워요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: brightAvg['3'] + '%' }"></div>
+            </div>
+            {{ brightAvg['3'] }}%
+          </div>
+        </div>
+
+        <h3>색감 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>선명해요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: colorAvg['1'] + '%' }"></div>
+            </div>
+            {{ colorAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>보통이에요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: colorAvg['2'] + '%' }"></div>
+            </div>
+            {{ colorAvg['2'] }}%
+          </div>
+          <div class="rating-option">
+            <span>흐려요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: colorAvg['3'] + '%' }"></div>
+            </div>
+            {{ colorAvg['3'] }}%
+          </div>
+        </div>
+
+        <h3>두께감 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>두꺼워요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: thickAvg['1'] + '%' }"></div>
+            </div>
+            {{ thickAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>보통이에요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: thickAvg['2'] + '%' }"></div>
+            </div>
+            {{ thickAvg['2'] }}%
+          </div>
+          <div class="rating-option">
+            <span>얇아요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: thickAvg['3'] + '%' }"></div>
+            </div>
+            {{ thickAvg['3'] }}%
+          </div>
+        </div>
+
+        <h3>배송 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>빨라요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: deliveryAvg['1'] + '%' }"></div>
+            </div>
+            {{ deliveryAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>아쉬워요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: deliveryAvg['2'] + '%' }"></div>
+            </div>
+            {{ deliveryAvg['2'] }}%
+          </div>
+        </div>
+
+        <h3>포장 통계</h3>
+        <div class="rating">
+          <div class="rating-option">
+            <span>꼼꼼해요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: packAvg['1'] + '%' }"></div>
+            </div>
+            {{ packAvg['1'] }}%
+          </div>
+          <div class="rating-option">
+            <span>아쉬워요</span>
+            <div class="bar">
+              <div class="filled" :style="{ width: packAvg['2'] + '%' }"></div>
+            </div>
+            {{ packAvg['2'] }}%
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 리뷰를 나타내는 부분 -->
@@ -146,6 +282,12 @@ interface Review {
   rate: number
   name: string
   reviewComment: string
+  size: number
+  brightness: number
+  color: number
+  thickness: number
+  delivery: number
+  packaging: number
 }
 
 interface Comment {
@@ -194,7 +336,6 @@ export default {
     const averageRate = ref(0)
     const reviewComment = ref<string>('')
     const reviewCommentList = ref<Comment[]>([])
-
     const reviewList = ref<Review[]>([])
 
     const addCommas = (num: number) => {
@@ -294,15 +435,70 @@ export default {
         console.log(error)
       })
 
-    // 리뷰 정보
+    // 리뷰 정보 and 리뷰 통계
+    const sizeAvg = ref<any>({ '1': 0, '2': 0, '3': 0 })
+    const brightAvg = ref<any>({ '1': 0, '2': 0, '3': 0 })
+    const colorAvg = ref<any>({ '1': 0, '2': 0, '3': 0 })
+    const thickAvg = ref<any>({ '1': 0, '2': 0, '3': 0 })
+    const deliveryAvg = ref<any>({ '1': 0, '2': 0 })
+    const packAvg = ref<any>({ '1': 0, '2': 0 })
     axios
       .get('api/reviewProductDetail', { params: { productId: route.query.id } })
       .then((res) => {
         reviewList.value = res.data
+
+        const reviewSizeList: Array<number> = []
+        const reviewBrightList: Array<number> = []
+        const reviewColorList: Array<number> = []
+        const reviewThickList: Array<number> = []
+        const reviewDeliveryList: Array<number> = []
+        const reviewPackList: Array<number> = []
+        res.data.forEach((item: Review) => {
+          reviewSizeList.push(item.size)
+          reviewBrightList.push(item.brightness)
+          reviewColorList.push(item.color)
+          reviewThickList.push(item.thickness)
+          reviewDeliveryList.push(item.delivery)
+          reviewPackList.push(item.packaging)
+        })
+
+        sizeAvg.value = calculateAverage3(reviewSizeList)
+        brightAvg.value = calculateAverage3(reviewBrightList)
+        colorAvg.value = calculateAverage3(reviewColorList)
+        thickAvg.value = calculateAverage3(reviewThickList)
+        deliveryAvg.value = calculateAverage2(reviewDeliveryList)
+        packAvg.value = calculateAverage2(reviewPackList)
       })
       .catch((error) => {
         console.log(error)
       })
+
+    // 리뷰 통계 구하는 함수 (3개)
+    function calculateAverage3(list: Array<number>) {
+      const counts: any = { '1': 0, '2': 0, '3': 0 }
+      list.forEach((item: number) => {
+        counts[item.toString()]++
+      })
+
+      return {
+        '1': Math.floor((counts['1'] / list.length) * 100),
+        '2': Math.floor((counts['2'] / list.length) * 100),
+        '3': Math.floor((counts['3'] / list.length) * 100)
+      }
+    }
+
+    // 리뷰 통계 구하는 함수 (2개)
+    function calculateAverage2(list: Array<number>) {
+      const counts: any = { '1': 0, '2': 0 }
+      list.forEach((item: number) => {
+        counts[item.toString()]++
+      })
+
+      return {
+        '1': Math.floor((counts['1'] / list.length) * 100),
+        '2': Math.floor((counts['2'] / list.length) * 100)
+      }
+    }
 
     // 리뷰 별점 평균
     axios
@@ -358,7 +554,6 @@ export default {
     axios
       .get('api/selectReviewComment')
       .then((res) => {
-        // console.log(res.data)
         reviewCommentList.value = res.data
       })
       .catch((error) => {
@@ -443,7 +638,13 @@ export default {
       deleteComment,
       updateComment,
       editingCommentId,
-      saveEditedComment
+      saveEditedComment,
+      sizeAvg,
+      brightAvg,
+      colorAvg,
+      thickAvg,
+      deliveryAvg,
+      packAvg
     }
   }
 }
@@ -563,5 +764,32 @@ export default {
 
 button {
   margin: 5px;
+}
+
+.statistics {
+  margin-bottom: 30px;
+}
+
+.rating {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.rating-option {
+  width: 100px;
+  color: orange;
+}
+.bar {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  height: 10px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.filled {
+  background-color: orange;
+  height: 100%;
 }
 </style>

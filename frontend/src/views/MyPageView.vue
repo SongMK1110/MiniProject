@@ -3,8 +3,20 @@
     <h2>마이 페이지</h2>
     <div class="user-info">
       <div class="profile-picture">
-        <!-- 여기에 프로필 사진을 넣으세요 -->
         <img v-if="memberInfo" :src="getImageUrl(memberInfo?.img)" alt="프로필 사진" />
+        <div style="position: absolute">
+          <div v-if="!changeImg">
+            <button type="button" @click="changeImg = true">변경</button>
+          </div>
+          <div v-else>
+            <button type="button" @click="changeProfile">선택</button>
+            <div style="margin-top: 5px">
+              <button type="button" @click="saveImg" style="margin-right: 5px">저장</button>
+              <button type="button" @click="changeImg = false">취소</button>
+            </div>
+            <input type="file" ref="fileInput" style="display: none" @change="handleFileSelect" />
+          </div>
+        </div>
       </div>
       <div class="info">
         <div class="item">
@@ -93,6 +105,10 @@
           </span>
           <button type="button" @click="memberPhone = true" v-if="!memberPhone">변경</button>
         </div>
+        <div class="item">
+          <span class="label">적립금:</span>
+          <span class="value">{{ memberInfo?.reserves }}원</span>
+        </div>
       </div>
     </div>
   </div>
@@ -138,6 +154,48 @@ const memberEmail = ref<boolean>(false)
 const newEmail = ref<string>()
 const memberPhone = ref<boolean>(false)
 const newPhone = ref<string>()
+const fileInput = ref<any>(null)
+const changeImg = ref<boolean>(false)
+
+let selectedFile: any = null // 선택된 파일을 저장할 변수
+
+const changeProfile = () => {
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
+}
+
+const handleFileSelect = (event: any) => {
+  selectedFile = event.target.files[0] // 선택된 파일을 변수에 저장
+  if (selectedFile) {
+    console.log('선택된 파일:', selectedFile.name)
+  }
+}
+
+const saveImg = () => {
+  if (selectedFile) {
+    console.log('이미지 저장', selectedFile)
+    const formData = new FormData()
+    formData.append('uploadFile', selectedFile)
+
+    console.log(selectedFile.files)
+
+    axios
+      .post('api/uploadImg', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else {
+    console.log('파일을 선택하세요.')
+  }
+}
 
 const updatePw = () => {
   if (memberInfo.value?.pw !== currentPw.value) {

@@ -31,4 +31,6 @@ public interface OrderService {
 
 	// 적립금 조회
 	public MemberVO getReserves(MemberVO vo);
+
+	public List<OrderVO> getOrderDetailList(OrderVO vo);
 }

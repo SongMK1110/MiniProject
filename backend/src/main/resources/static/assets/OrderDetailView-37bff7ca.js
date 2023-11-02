@@ -1,0 +1,1 @@
+import{Q as e,o as t,c as o,b as n}from"./index-d96fb694.js";const s=n("h1",null,"주문 상세 내역",-1),a=[s],i=e({__name:"OrderDetailView",setup(c){return(r,_)=>(t(),o("div",null,a))}});export{i as default};

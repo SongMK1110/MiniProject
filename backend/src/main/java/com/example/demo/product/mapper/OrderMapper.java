@@ -31,4 +31,7 @@ public interface OrderMapper {
 
 	// 적립금 조회
 	public MemberVO selectReserves(MemberVO vo);
+
+	// 주문서 디테일 페이지 조회
+	public List<OrderVO> selectOrderDetailList(OrderVO vo);
 }

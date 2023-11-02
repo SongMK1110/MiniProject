@@ -34,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		try {
 			final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+			System.out.println(secretKey);
 			log.info("authorization:{}", authorization);
 
 			// token 안보내면 block

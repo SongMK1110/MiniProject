@@ -35,4 +35,5 @@ public interface ReviewMapper {
 
 	// 리뷰 댓글 수정
 	public int updateReviewComment(ReviewVO vo);
+
 }

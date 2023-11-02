@@ -60,4 +60,9 @@ public class OrderServiceImpl implements OrderService {
 	public MemberVO getReserves(MemberVO vo) {
 		return orderMapper.selectReserves(vo);
 	}
+
+	@Override
+	public List<OrderVO> getOrderDetailList(OrderVO vo) {
+		return orderMapper.selectOrderDetailList(vo);
+	}
 }

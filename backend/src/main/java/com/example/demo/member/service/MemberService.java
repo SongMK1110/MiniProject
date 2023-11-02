@@ -1,6 +1,7 @@
 package com.example.demo.member.service;
 
 import com.example.demo.member.vo.MemberVO;
+import com.example.demo.product.vo.OrderVO;
 
 public interface MemberService {
 	// public TokenInfo login(String string, String string2);
@@ -16,4 +17,6 @@ public interface MemberService {
 	public MemberVO getMember(MemberVO vo);
 
 	public int modifyMypage(MemberVO vo);
+
+	public int modifyReserves(OrderVO vo);
 }

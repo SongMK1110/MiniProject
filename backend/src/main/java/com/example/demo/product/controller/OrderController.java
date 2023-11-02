@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.member.service.MemberService;
 import com.example.demo.member.vo.MemberVO;
 import com.example.demo.product.service.OrderService;
 import com.example.demo.product.vo.AddressVO;
@@ -24,6 +25,9 @@ import com.example.demo.product.vo.OrderVO;
 public class OrderController {
 	@Autowired
 	OrderService orderService;
+
+	@Autowired
+	MemberService memberService;
 
 	@GetMapping("selectAddrList")
 	@ResponseBody
@@ -60,6 +64,8 @@ public class OrderController {
 	@ResponseBody
 	public int order(@RequestBody OrderVO vo, Authentication authentication) {
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
+
+		memberService.modifyReserves(vo);
 
 		int result = orderService.addOrder(vo);
 
@@ -120,5 +126,11 @@ public class OrderController {
 		MemberVO vo = new MemberVO();
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
 		return orderService.getReserves(vo);
+	}
+
+	@PostMapping("selectOrderDetailList")
+	@ResponseBody
+	public List<OrderVO> selectOrderDetailList(@RequestBody OrderVO vo) {
+		return orderService.getOrderDetailList(vo);
 	}
 }

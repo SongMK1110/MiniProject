@@ -29,7 +29,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(cart, index) in cartItems" :key="index" class="cart-item">
+        <CartList
+          :cartItems="cartItems"
+          :quantityBtn="quantityBtn"
+          :delCartBtn="delCartBtn"
+          :getImageUrl="getImageUrl"
+          :addCommas="addCommas"
+        ></CartList>
+        <!-- <tr v-for="(cart, index) in cartItems" :key="index" class="cart-item">
           <td><input type="checkbox" v-model="cart.selected" /></td>
           <td class="item-info">
             <router-link :to="{ name: 'productDetailView', query: { id: cart.productId } }">
@@ -56,7 +63,7 @@
             <span style="font-weight: bold">배송비무료</span> <br />
             0원 이상 무료
           </td>
-        </tr>
+        </tr> -->
       </tbody>
     </table>
     <br />
@@ -86,6 +93,7 @@ import axios from 'axios'
 import { ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import CartList from '@/components/CartList.vue'
 
 interface Cart {
   cartId: number
@@ -130,11 +138,9 @@ export default {
     const modal = ref(false)
     const quantity = ref(1)
     const cartId = ref(0)
-
     const addCommas = (num: number) => {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
-
     // 장바구니 정보
     axios
       .get('/api/cartList')
@@ -144,7 +150,6 @@ export default {
       .catch((error) => {
         console.log(error)
       })
-
     const delCartBtn = (productId: number, index: number): void => {
       const confirmed = window.confirm('삭제하시겠습니까?')
       if (confirmed) {
@@ -157,19 +162,16 @@ export default {
         cartItems.value.splice(index, 1)
       }
     }
-
     const orderSelectedProducts = () => {
       // 선택된 상품의 ID 목록을 가져오기
       const selectedProductIds = cartItems.value
         .filter((cart) => cart.selected)
         .map((cart) => cart.productId)
-
       // 선택된 상품이 없을 경우 알림
       if (selectedProductIds.length === 0) {
         alert('선택된 상품이 없습니다.')
         return
       }
-
       // 주문 페이지로 이동
       router.push({
         name: 'OrderView',
@@ -179,7 +181,6 @@ export default {
         }
       })
     }
-
     watchEffect(() => {
       if (cartItems.value.every((cart) => cart.selected)) {
         selectAll.value = true
@@ -187,31 +188,26 @@ export default {
         selectAll.value = false
       }
     })
-
     const toggleAllSelected = () => {
       cartItems.value.forEach((cart) => {
         cart.selected = !selectAll.value
       })
     }
-
     // 증가
     const incrementQuantity = (): void => {
       quantity.value++
     }
-
     // 감소
     const decrementQuantity = (): void => {
       if (quantity.value > 1) {
         quantity.value--
       }
     }
-
     const quantityBtn = (cnt: number, id: number) => {
       cartId.value = id
       modal.value = true
       quantity.value = cnt
     }
-
     const quantityChange = () => {
       const confirmed = window.confirm('변경하시겠습니까?')
       if (confirmed) {
@@ -227,7 +223,6 @@ export default {
           })
       }
     }
-
     return {
       cartItems,
       route,
@@ -247,7 +242,8 @@ export default {
       quantityChange,
       cartId
     }
-  }
+  },
+  components: { CartList }
 }
 </script>
 <style scoped>

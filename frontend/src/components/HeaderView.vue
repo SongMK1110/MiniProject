@@ -1,7 +1,31 @@
 <template>
   <div class="container">
     <div class="logo">
-      <h1><a @click="main">MUSINSA</a></h1>
+      <div style="display: flex; align-items: center">
+        <h1 style="margin-right: 10px">
+          <a @click="main">MUSINSA</a>
+        </h1>
+        <div style="display: flex; align-items: center">
+          <input
+            type="text"
+            style="padding: 5px; border: 1px solid #ccc; border-radius: 5px"
+            v-model="searchInput"
+          />
+          <button
+            type="button"
+            style="
+              background-color: #f0f0f0;
+              border: none;
+              padding: 5px 10px;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+            @click="searchBtn"
+          >
+            🔍
+          </button>
+        </div>
+      </div>
     </div>
     <div class="nav-items">
       <template v-if="!isLoggedIn">
@@ -55,6 +79,8 @@ export default {
     const isLoggedIn = ref(false)
     const token = localStorage.getItem('token')
     const parseToken = parseJwt(token)
+    const searchInput = ref<string>()
+
     let userId = ''
     if (parseToken !== undefined) {
       userId = parseJwt(token).userName
@@ -80,7 +106,24 @@ export default {
       isLoggedIn.value = token !== null
     })
 
-    return { isLoggedIn, login, main, logout, parseJwt, token, parseToken, userId }
+    const searchBtn = () => {
+      // router.push({ name: 'SearchView', query: { search: searchInput.value } })
+      location.href = `searchForm?search=${searchInput.value}`
+      searchInput.value = ''
+    }
+
+    return {
+      isLoggedIn,
+      login,
+      main,
+      logout,
+      parseJwt,
+      token,
+      parseToken,
+      userId,
+      searchInput,
+      searchBtn
+    }
   }
 }
 </script>

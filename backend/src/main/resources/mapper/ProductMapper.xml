@@ -13,23 +13,40 @@
 			AND main = 'Y'
 		</where>
 	</select>
-	
+
 	<select id="selectProductDetail" resultType="ProductVO">
 		SELECT 	*
 		FROM	product
 		WHERE	product_id = #{productId}	
 	</select>
-	
+
 	<select id="selectProductDetailImg" resultType="ProductVO">
 		SELECT 	*
 		FROM	image
 		WHERE	product_id = #{productId}	
 	</select>
-	
+
 	<select id="likeCheck" resultType="int">
 		SELECT	COUNT(*) as count
 		FROM	`like`
 		WHERE	product_id = #{productId}
 		AND		member_id = #{memberId}
 	</select>
+
+	<select id="selectSearchProduct" resultType="ProductVO">
+		SELECT	p.product_id,
+				p.category_id,
+				p.name,
+				p.price,
+				p.content,
+				p.rdate,
+				i.img
+		FROM	product p
+		JOIN	image i
+		ON		p.product_id = i.product_id
+		WHERE	p.name LIKE CONCAT('%', #{name}, '%')
+		AND		i.main = 'Y'
+	</select>
+
+
 </mapper>

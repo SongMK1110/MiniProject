@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class CommonController {
     @GetMapping("/{path:[^\\.]*}")
     public String forward(HttpServletRequest request) {
-    	System.out.println("ifsjojfioejfioejfoij");
+        System.out.println("ifsjojfioejfioejfoij");
         return "forward:/";
     }
 }

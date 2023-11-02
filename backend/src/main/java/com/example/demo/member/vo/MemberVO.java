@@ -17,7 +17,9 @@ public class MemberVO {
 	private Date sign_dt;
 	private String sign_out;
 	private String reserves;
-	
+	private String nickname;
+	private String img;
+
 	private int chk;
-	
+
 }

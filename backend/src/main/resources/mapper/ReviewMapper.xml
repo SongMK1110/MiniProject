@@ -99,4 +99,5 @@
   	SET		content = #{content}
   	WHERE	comment_id = #{commentId}
 	</update>
+
 </mapper>

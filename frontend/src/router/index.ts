@@ -65,6 +65,11 @@ const router = createRouter({
       path: '/mypage',
       name: 'MyPageView',
       component: () => import(/* webpackChunkName: "MyPageView" */ '../views/MyPageView.vue')
+    },
+    {
+      path: '/searchForm',
+      name: 'SearchView',
+      component: () => import(/* webpackChunkName: "SearchView" */ '../views/SearchView.vue')
     }
 
     // {

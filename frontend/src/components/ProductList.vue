@@ -15,21 +15,8 @@
 
 <script lang="ts">
 export default {
-  props: ['productList'],
-  setup() {
-    const getImageUrl = (name: string) => {
-      return new URL(`/src/assets/images/${name}`, import.meta.url).href
-    }
-
-    const addCommas = (num: number) => {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    }
-
-    return {
-      getImageUrl,
-      addCommas
-    }
-  }
+  props: ['productList', 'addCommas', 'getImageUrl'],
+  setup() {}
 }
 </script>
 

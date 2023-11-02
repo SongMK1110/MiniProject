@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.member.mapper.MemberMapper;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.member.vo.MemberVO;
+import com.example.demo.product.vo.OrderVO;
 import com.example.demo.utils.JwtUtil;
 
 @Service
@@ -24,7 +25,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public String loginToken(String userName, String password) {
-		System.out.println(secretKey);
 		return JwtUtil.createJwt(userName, secretKey, expiredMs);
 	}
 
@@ -56,6 +56,12 @@ public class MemberServiceImpl implements MemberService {
 		} else {
 			return memberMapper.updateMypage(vo);
 		}
+	}
+
+	@Override
+	public int modifyReserves(OrderVO vo) {
+		memberMapper.reservesMinus(vo);
+		return memberMapper.reservesPlus(vo);
 	}
 	// private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	// private final JwtTokenProvider jwtTokenProvider;

@@ -1,7 +1,5 @@
 package com.example.demo.product.vo;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -11,7 +9,7 @@ public class ReviewVO {
 	private int memberId;
 	private String content;
 	private double rate;
-	private Date rdate;
+	private String rdate;
 	private int size;
 	private int brightness;
 	private int color;
@@ -24,5 +22,7 @@ public class ReviewVO {
 
 	private int commentId;
 	private String reviewComment;
+
+	private int count;
 
 }

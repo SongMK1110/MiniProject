@@ -15,9 +15,14 @@ public class OrderVO {
 	private String req;
 	private int price;
 	private String paymentMethod;
+	private int reserves;
 
 	private int productId;
 	private int cnt;
 	private String img;
-	private int reserves;
+	private int reservesPlus;
+	private int reservesMinus;
+	private int totalPrice;
+	private String productName;
+
 }

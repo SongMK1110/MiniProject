@@ -12,7 +12,7 @@ public class ProductVO {
 	private int price;
 	private String content;
 	private Date rdate;
-	
+
 	private String img;
 	private int memberId;
 	private int count;

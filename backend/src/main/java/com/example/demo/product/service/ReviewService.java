@@ -33,4 +33,5 @@ public interface ReviewService {
 
 	// 리뷰 댓글 수정
 	public int modifyReviewComment(ReviewVO vo);
+
 }

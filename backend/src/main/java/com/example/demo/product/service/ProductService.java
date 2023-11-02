@@ -11,4 +11,7 @@ public interface ProductService {
 
 	// 상품 디테일
 	public Map<String, Object> getProductDetail(ProductVO vo);
+
+	// 상품 검색 리스트
+	public List<ProductVO> getSearchProduct(ProductVO vo);
 }

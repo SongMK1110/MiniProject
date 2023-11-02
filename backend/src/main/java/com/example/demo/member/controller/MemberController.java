@@ -71,7 +71,6 @@ public class MemberController {
 	public MemberVO selectMember(Authentication authentication) {
 		MemberVO vo = new MemberVO();
 		vo.setMemberId(Integer.parseInt(authentication.getName()));
-
 		return memberService.getMember(vo);
 	}
 

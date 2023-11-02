@@ -14,8 +14,8 @@ import com.example.demo.product.vo.ProductVO;
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
-    ProductMapper productMapper;
-	
+	ProductMapper productMapper;
+
 	@Override
 	public List<ProductVO> getProductList(String categoryId) {
 		return productMapper.selectProductList(categoryId);
@@ -27,7 +27,12 @@ public class ProductServiceImpl implements ProductService {
 		map.put("productDetail", productMapper.selectProductDetail(vo));
 		map.put("productDetailImg", productMapper.selectProductDetailImg(vo));
 		map.put("likeCheck", productMapper.likeCheck(vo));
-		
+
 		return map;
+	}
+
+	@Override
+	public List<ProductVO> getSearchProduct(ProductVO vo) {
+		return productMapper.selectSearchProduct(vo);
 	}
 }

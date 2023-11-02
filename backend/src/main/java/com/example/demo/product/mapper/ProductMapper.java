@@ -13,8 +13,11 @@ public interface ProductMapper {
 
 	// 상품 이미지
 	public List<ProductVO> selectProductDetailImg(ProductVO vo);
-	
+
 	// 좋아요 체크
 	public int likeCheck(ProductVO vo);
+
+	// 상품 검색 리스트
+	public List<ProductVO> selectSearchProduct(ProductVO vo);
 
 }

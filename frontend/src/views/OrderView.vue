@@ -181,6 +181,9 @@ interface Order {
   phone: string
   price: number
   paymentMethod: string
+  reservesPlus: number
+  reservesMinus: number
+  reserves: number
 }
 
 function getImageUrl(name: string) {
@@ -204,6 +207,7 @@ export default {
     const phone = ref('')
     const reservesInfo = ref<{ reserves: number }>()
     const useReserves = ref(0)
+    const reserves = ref<number>(0)
 
     axios
       .get('/api/selectAddrList')
@@ -249,6 +253,13 @@ export default {
           params: searchParam
         })
         productList.value = response.data
+
+        let sum = 0
+        response.data.forEach((item: any) => {
+          sum += item.price * item.cnt * 0.01
+        })
+        reserves.value = sum
+        console.log(reserves.value)
       } catch (error) {
         console.error('Error fetching products:', error)
       }
@@ -271,8 +282,11 @@ export default {
             phone: addrInfo.value.phone,
             zipcode: addrInfo.value.zipcode,
             req: req.value,
-            price: getTotalPrice.value - useReserves.value,
-            paymentMethod: payMethod.value
+            price: getTotalPrice.value,
+            paymentMethod: payMethod.value,
+            reservesPlus: reserves.value,
+            reservesMinus: useReserves.value,
+            reserves: useReserves.value
           }
 
           try {
@@ -415,7 +429,8 @@ export default {
       saveAddr,
       addCommas,
       reservesInfo,
-      useReserves
+      useReserves,
+      reserves
     }
   }
 }

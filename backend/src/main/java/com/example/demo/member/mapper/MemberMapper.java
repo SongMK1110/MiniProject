@@ -1,6 +1,7 @@
 package com.example.demo.member.mapper;
 
 import com.example.demo.member.vo.MemberVO;
+import com.example.demo.product.vo.OrderVO;
 
 public interface MemberMapper {
 
@@ -17,5 +18,9 @@ public interface MemberMapper {
 	public int nicknameCheck(MemberVO vo);
 
 	public int updateMypage(MemberVO vo);
+
+	public int reservesPlus(OrderVO vo);
+
+	public int reservesMinus(OrderVO vo);
 
 }

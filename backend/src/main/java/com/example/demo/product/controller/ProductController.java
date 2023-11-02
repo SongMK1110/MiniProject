@@ -21,11 +21,11 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 
-//    @GetMapping("productList")
-//    @ResponseBody
-//    public List<ProductVO> productList() {
-//        return productService.getProductList();
-//    }
+	// @GetMapping("productList")
+	// @ResponseBody
+	// public List<ProductVO> productList() {
+	// return productService.getProductList();
+	// }
 
 	@GetMapping("productList")
 	@ResponseBody
@@ -36,11 +36,16 @@ public class ProductController {
 	@PostMapping("productDetail")
 	@ResponseBody
 	public Map<String, Object> productDetail(@RequestBody ProductVO vo, Authentication authentication) {
-		if(authentication != null) {
+		if (authentication != null) {
 			vo.setMemberId(Integer.parseInt(authentication.getName()));
 		}
 		return productService.getProductDetail(vo);
 	}
-	
+
+	@GetMapping("searchProduct")
+	@ResponseBody
+	public List<ProductVO> searchProductList(ProductVO vo) {
+		return productService.getSearchProduct(vo);
+	}
 
 }
