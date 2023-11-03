@@ -59,7 +59,7 @@
       <table>
         <tbody>
           <tr>
-            <th>이름</th>
+            <th style="width: 25%">이름</th>
             <td>{{ orderDetailInfo[0]?.name }}</td>
           </tr>
           <tr>

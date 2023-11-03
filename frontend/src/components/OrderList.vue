@@ -9,7 +9,11 @@
     </td>
     <td>{{ order.rdate }}</td>
     <td>
-      <span @click="orderDetail(order.orderId)" style="cursor: pointer">{{ order.orderId }}</span>
+      <span
+        @click="orderDetail(order.orderId)"
+        style="cursor: pointer; text-decoration: underline; font-weight: bold"
+        >{{ order.orderId }}</span
+      >
     </td>
     <td>
       {{ addCommas(order.price) }}원 <br />

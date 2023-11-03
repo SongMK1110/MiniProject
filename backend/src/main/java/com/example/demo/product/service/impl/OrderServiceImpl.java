@@ -65,4 +65,9 @@ public class OrderServiceImpl implements OrderService {
 	public List<OrderVO> getOrderDetailList(OrderVO vo) {
 		return orderMapper.selectOrderDetailList(vo);
 	}
+
+	@Override
+	public List<OrderVO> searchOrderList(OrderVO vo) {
+		return orderMapper.searchOrderList(vo);
+	}
 }

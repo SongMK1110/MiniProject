@@ -31,7 +31,11 @@
   						 #{color},
   						 #{thickness},
   						 #{delivery},
-  						 #{packaging} )
+  						 #{packaging} );
+	
+	UPDATE `member`
+	SET		reserves = reserves + 500
+	WHERE	member_id = #{memberId};
 	</insert>
 
 	<select id="selectReviewList" resultType="ReviewVO">
@@ -49,7 +53,7 @@
 	</select>
 
 	<select id="selectReviewRateAvg" resultType="double">
-  	SELECT 	AVG(rate) as avg
+  	SELECT  IFNULL(AVG(rate), 0) as avg 
 	FROM 	review
 	WHERE 	product_id = #{productId}
 	</select>

@@ -34,4 +34,7 @@ public interface OrderMapper {
 
 	// 주문서 디테일 페이지 조회
 	public List<OrderVO> selectOrderDetailList(OrderVO vo);
+
+	// 주문내역 검색
+	public List<OrderVO> searchOrderList(OrderVO vo);
 }

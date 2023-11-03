@@ -133,4 +133,12 @@ public class OrderController {
 	public List<OrderVO> selectOrderDetailList(@RequestBody OrderVO vo) {
 		return orderService.getOrderDetailList(vo);
 	}
+
+	@GetMapping("searchOrderList")
+	@ResponseBody
+	public List<OrderVO> searchOrderList(OrderVO vo, Authentication authentication) {
+		vo.setMemberId(Integer.parseInt(authentication.getName()));
+		System.out.println(vo);
+		return orderService.searchOrderList(vo);
+	}
 }

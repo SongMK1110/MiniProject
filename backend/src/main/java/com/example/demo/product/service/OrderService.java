@@ -32,5 +32,9 @@ public interface OrderService {
 	// 적립금 조회
 	public MemberVO getReserves(MemberVO vo);
 
+	// 주문 디테일 페이지 조회
 	public List<OrderVO> getOrderDetailList(OrderVO vo);
+
+	// 주문내역 검색
+	public List<OrderVO> searchOrderList(OrderVO vo);
 }

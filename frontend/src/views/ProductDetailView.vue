@@ -51,210 +51,28 @@
         <input type="radio" v-if="averageRate >= 0.5" value="0.5" v-model="averageRate" readonly />
         <label class="half" title="0.5점"></label>
       </fieldset>
-      <div class="statistics">
-        <h3>사이즈 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>커요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: sizeAvg['1'] + '%' }"></div>
-            </div>
-            {{ sizeAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>보통이에요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: sizeAvg['2'] + '%' }"></div>
-            </div>
-            {{ sizeAvg['2'] }}%
-          </div>
-          <div class="rating-option">
-            <span>작아요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: sizeAvg['3'] + '%' }"></div>
-            </div>
-            {{ sizeAvg['3'] }}%
-          </div>
-        </div>
-
-        <h3>밝기 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>밝아요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: brightAvg['1'] + '%' }"></div>
-            </div>
-            {{ brightAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>보통이에요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: brightAvg['2'] + '%' }"></div>
-            </div>
-            {{ brightAvg['2'] }}%
-          </div>
-          <div class="rating-option">
-            <span>어두워요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: brightAvg['3'] + '%' }"></div>
-            </div>
-            {{ brightAvg['3'] }}%
-          </div>
-        </div>
-
-        <h3>색감 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>선명해요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: colorAvg['1'] + '%' }"></div>
-            </div>
-            {{ colorAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>보통이에요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: colorAvg['2'] + '%' }"></div>
-            </div>
-            {{ colorAvg['2'] }}%
-          </div>
-          <div class="rating-option">
-            <span>흐려요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: colorAvg['3'] + '%' }"></div>
-            </div>
-            {{ colorAvg['3'] }}%
-          </div>
-        </div>
-
-        <h3>두께감 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>두꺼워요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: thickAvg['1'] + '%' }"></div>
-            </div>
-            {{ thickAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>보통이에요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: thickAvg['2'] + '%' }"></div>
-            </div>
-            {{ thickAvg['2'] }}%
-          </div>
-          <div class="rating-option">
-            <span>얇아요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: thickAvg['3'] + '%' }"></div>
-            </div>
-            {{ thickAvg['3'] }}%
-          </div>
-        </div>
-
-        <h3>배송 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>빨라요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: deliveryAvg['1'] + '%' }"></div>
-            </div>
-            {{ deliveryAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>아쉬워요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: deliveryAvg['2'] + '%' }"></div>
-            </div>
-            {{ deliveryAvg['2'] }}%
-          </div>
-        </div>
-
-        <h3>포장 통계</h3>
-        <div class="rating">
-          <div class="rating-option">
-            <span>꼼꼼해요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: packAvg['1'] + '%' }"></div>
-            </div>
-            {{ packAvg['1'] }}%
-          </div>
-          <div class="rating-option">
-            <span>아쉬워요</span>
-            <div class="bar">
-              <div class="filled" :style="{ width: packAvg['2'] + '%' }"></div>
-            </div>
-            {{ packAvg['2'] }}%
-          </div>
-        </div>
-      </div>
+      <!-- 리뷰 통계 -->
+      <ReviewStatistics
+        :sizeAvg="sizeAvg"
+        :brightAvg="brightAvg"
+        :colorAvg="colorAvg"
+        :thickAvg="thickAvg"
+        :deliveryAvg="deliveryAvg"
+        :packAvg="packAvg"
+      />
     </div>
-
     <!-- 리뷰를 나타내는 부분 -->
-    <div class="review-section">
-      <h2>상품 리뷰</h2>
-      <ul class="review-list">
-        <li class="review-item" v-for="(review, index) in reviewList" :key="index">
-          <div class="review-author">작성자: {{ review.name }}</div>
-          <div class="review-rating">평점: {{ review.rate }}/5</div>
-          <fieldset class="rate">
-            <input type="radio" value="5" v-model="review.rate" readonly />
-            <label title="5점"></label>
-            <input type="radio" value="4.5" v-model="review.rate" readonly />
-            <label class="half" title="4.5점"></label>
-            <input type="radio" value="4" v-model="review.rate" readonly /><label title="4점">
-            </label>
-            <input type="radio" value="3.5" v-model="review.rate" readonly /><label
-              class="half"
-              title="3.5점"
-            ></label>
-            <input type="radio" value="3" v-model="review.rate" readonly /><label
-              title="3점"
-            ></label>
-            <input type="radio" value="2.5" v-model="review.rate" readonly /><label
-              class="half"
-              title="2.5점"
-            ></label>
-            <input type="radio" value="2" v-model="review.rate" readonly /><label
-              title="2점"
-            ></label>
-            <input type="radio" value="1.5" v-model="review.rate" readonly /><label
-              class="half"
-              title="1.5점"
-            ></label>
-            <input type="radio" value="1" v-model="review.rate" readonly /><label
-              title="1점"
-            ></label>
-            <input type="radio" value="0.5" v-model="review.rate" readonly /><label
-              class="half"
-              title="0.5점"
-            ></label>
-          </fieldset>
-          <div class="review-content">{{ review.content }}</div>
-          <label for="">댓글: </label><input type="text" v-model="review.reviewComment" />
-          <button type="button" @click="insertComment(review.reviewId)">등록</button>
-          <div class="comment-list" v-for="(comment, i) in reviewCommentList" :key="i">
-            <div class="comment" v-if="comment.reviewId === review.reviewId">
-              <div v-if="editingCommentId === comment.commentId">
-                <div class="comment-author">작성자: {{ comment.name }}</div>
-                <textarea v-model="reviewComment"></textarea>
-                <div class="comment-date">작성일: {{ comment.rdate }}</div>
-                <button @click="saveEditedComment(comment.commentId)">저장</button>
-              </div>
-              <div v-else>
-                <div class="comment-author">작성자: {{ comment.name }}</div>
-                <div class="comment-content">내용: {{ comment.content }}</div>
-                <div class="comment-date">작성일: {{ comment.rdate }}</div>
-                <div v-if="comment.memberId === parseInt(userId)">
-                  <button @click="updateComment(comment.commentId, comment.content)">수정</button>
-                  <button @click="deleteComment(comment.commentId)">삭제</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <ProductReview
+      :reviewList="reviewList"
+      :insertComment="insertComment"
+      :reviewCommentList="reviewCommentList"
+      :editingCommentId="editingCommentId"
+      :reviewComment="reviewComment"
+      :saveEditedComment="saveEditedComment"
+      :userId="userId"
+      :updateComment="updateComment"
+      :deleteComment="deleteComment"
+    />
   </div>
 </template>
 
@@ -263,6 +81,8 @@ import axios from 'axios'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import ReviewStatistics from '@/components/ReviewStatistics.vue'
+import ProductReview from '@/components/ProductReview.vue'
 
 interface Product {
   productId: number
@@ -320,6 +140,10 @@ function parseJwt(token: string | null) {
 }
 
 export default {
+  components: {
+    ReviewStatistics,
+    ProductReview
+  },
   setup() {
     const route = useRoute()
     const product = ref<Product>()
@@ -372,7 +196,6 @@ export default {
           const cartChk = await axios.post('api/cartCheck', {
             productId: route.query.id
           })
-          console.log(cartChk)
           if (cartChk.data === 'duplication') {
             alert('장바구니에 있습니다.')
             return
@@ -382,7 +205,6 @@ export default {
             productId: route.query.id,
             cnt: quantity.value
           })
-          console.log(response)
           if (response.data === 'success') {
             router.push({ name: 'CartView', query: { userId: userId } })
           }
@@ -447,27 +269,29 @@ export default {
       .then((res) => {
         reviewList.value = res.data
 
-        const reviewSizeList: Array<number> = []
-        const reviewBrightList: Array<number> = []
-        const reviewColorList: Array<number> = []
-        const reviewThickList: Array<number> = []
-        const reviewDeliveryList: Array<number> = []
-        const reviewPackList: Array<number> = []
-        res.data.forEach((item: Review) => {
-          reviewSizeList.push(item.size)
-          reviewBrightList.push(item.brightness)
-          reviewColorList.push(item.color)
-          reviewThickList.push(item.thickness)
-          reviewDeliveryList.push(item.delivery)
-          reviewPackList.push(item.packaging)
-        })
+        if (res.data.length > 0) {
+          const reviewSizeList: Array<number> = []
+          const reviewBrightList: Array<number> = []
+          const reviewColorList: Array<number> = []
+          const reviewThickList: Array<number> = []
+          const reviewDeliveryList: Array<number> = []
+          const reviewPackList: Array<number> = []
+          res.data.forEach((item: Review) => {
+            reviewSizeList.push(item.size)
+            reviewBrightList.push(item.brightness)
+            reviewColorList.push(item.color)
+            reviewThickList.push(item.thickness)
+            reviewDeliveryList.push(item.delivery)
+            reviewPackList.push(item.packaging)
+          })
 
-        sizeAvg.value = calculateAverage3(reviewSizeList)
-        brightAvg.value = calculateAverage3(reviewBrightList)
-        colorAvg.value = calculateAverage3(reviewColorList)
-        thickAvg.value = calculateAverage3(reviewThickList)
-        deliveryAvg.value = calculateAverage2(reviewDeliveryList)
-        packAvg.value = calculateAverage2(reviewPackList)
+          sizeAvg.value = calculateAverage3(reviewSizeList)
+          brightAvg.value = calculateAverage3(reviewBrightList)
+          colorAvg.value = calculateAverage3(reviewColorList)
+          thickAvg.value = calculateAverage3(reviewThickList)
+          deliveryAvg.value = calculateAverage2(reviewDeliveryList)
+          packAvg.value = calculateAverage2(reviewPackList)
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -506,7 +330,7 @@ export default {
       .then((res) => {
         averageRate.value = res.data
         if (res.data < 0.5) {
-          averageRate.value = 0.5
+          averageRate.value = 0
         } else if (res.data < 1) {
           averageRate.value = 0.5
         } else if (res.data < 1.5) {
@@ -585,8 +409,8 @@ export default {
       reviewComment.value = content
     }
 
-    const saveEditedComment = (commentId: number) => {
-      const editedContent = reviewComment.value
+    const saveEditedComment = (commentId: number, commentReview: string) => {
+      const editedContent = commentReview
       const confirmed = window.confirm('수정하시겠습니까?')
 
       if (confirmed) {

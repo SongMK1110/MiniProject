@@ -13,18 +13,6 @@
       <div class="right" v-if="selectedCategory !== ''">
         <h2>{{ selectedCategory }} 상품 리스트</h2>
         <ProductList :productList="productList" :getImageUrl="getImageUrl" :addCommas="addCommas" />
-        <!-- <ul class="product-list">
-          <li v-for="product in productList" :key="product.productId">
-            <router-link :to="{ name: 'productDetailView', query: { id: product.productId } }">
-              <img :src="getImageUrl(product.img)" style="width: 200px" /><br />
-            </router-link>
-            <div class="product-info">
-              <div class="product-name">{{ product.name }}</div>
-              <div class="product-description">{{ product.content }}</div>
-              <div class="product-price">{{ addCommas(product.price) }}원</div>
-            </div>
-          </li>
-        </ul> -->
       </div>
     </div>
   </div>

@@ -24,5 +24,7 @@ public class OrderVO {
 	private int reservesMinus;
 	private int totalPrice;
 	private String productName;
+	private String startDate;
+	private String endDate;
 
 }

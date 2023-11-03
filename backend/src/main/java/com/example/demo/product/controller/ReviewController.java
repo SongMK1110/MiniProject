@@ -59,6 +59,7 @@ public class ReviewController {
 	@GetMapping("reviewRateAvg")
 	@ResponseBody
 	public double reviewRateAvg(@RequestParam int productId) {
+		System.out.println(productId);
 		return reviewService.getReviewRateAvg(productId);
 	}
 
