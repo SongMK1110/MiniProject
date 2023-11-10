@@ -62,7 +62,8 @@ axios.interceptors.request.use(
       config.url.startsWith('api/reviewProductDetail') ||
       config.url.startsWith('api/reviewRateAvg') ||
       config.url.startsWith('api/selectReviewComment') ||
-      config.url.startsWith('/api/login')
+      config.url.startsWith('/api/login') ||
+      config.url.startsWith('/api/signup')
     ) {
       return config
     } else if (token === null) {

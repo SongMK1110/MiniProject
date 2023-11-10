@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div class="my-page">
     <h2>마이 페이지</h2>
     <div class="user-info">
@@ -117,7 +118,8 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import axios from 'axios'
-// import router from '@/router'
+import router from '@/router'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Member {
   memberId: number
@@ -191,6 +193,10 @@ const saveImg = () => {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
   } else {
     console.log('파일을 선택하세요.')
@@ -222,6 +228,10 @@ const updatePw = () => {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
   }
 }
@@ -252,13 +262,18 @@ const updateNickname = () => {
       .then((res) => {
         if (res.data === 'success') {
           location.reload()
-        } else if (res.data === 'duplication') {
-          alert('중복된 닉네임 입니다.')
-          return
         }
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.data === 'duplication') {
+          alert('중복된 닉네임 입니다.')
+          return
+        }
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
   }
 }
@@ -288,6 +303,10 @@ const updateEmail = () => {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
   }
 }
@@ -317,6 +336,10 @@ const updatePhone = () => {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
   }
 }
@@ -337,6 +360,10 @@ axios
   })
   .catch((error) => {
     console.log(error)
+    if (error.response.status === 500) {
+      router.push('errorForm')
+      return
+    }
   })
 </script>
 <style scoped>

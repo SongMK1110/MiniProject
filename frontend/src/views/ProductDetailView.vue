@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div class="centered-content">
     <h1>상품 디테일 페이지</h1>
     <div>
@@ -15,7 +16,7 @@
       <div>
         <label for="quantity">수량:</label>
         <button @click="decrementQuantity">-</button>
-        <input type="number" id="quantity" v-model="quantity" readonly />
+        <input type="number" id="quantity" v-model="quantity" />
         <button @click="incrementQuantity">+</button>
       </div>
       <p v-if="totalPrice != ''">총 가격: {{ totalPrice }}원</p>
@@ -83,6 +84,7 @@ import { useRoute } from 'vue-router'
 import router from '@/router'
 import ReviewStatistics from '@/components/ReviewStatistics.vue'
 import ProductReview from '@/components/ProductReview.vue'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Product {
   productId: number
@@ -142,7 +144,8 @@ function parseJwt(token: string | null) {
 export default {
   components: {
     ReviewStatistics,
-    ProductReview
+    ProductReview,
+    HeaderView
   },
   setup() {
     const route = useRoute()
@@ -193,21 +196,32 @@ export default {
 
       if (confirmed) {
         try {
-          const cartChk = await axios.post('api/cartCheck', {
-            productId: route.query.id
-          })
-          if (cartChk.data === 'duplication') {
-            alert('장바구니에 있습니다.')
-            return
-          }
-
-          const response = await axios.post('api/insertCart', {
-            productId: route.query.id,
-            cnt: quantity.value
-          })
-          if (response.data === 'success') {
-            router.push({ name: 'CartView', query: { userId: userId } })
-          }
+          await axios
+            .post('api/insertCart', {
+              productId: route.query.id,
+              cnt: quantity.value
+            })
+            .then((response) => {
+              if (response.data === 'success') {
+                router.push({ name: 'CartView', query: { userId: userId } })
+              }
+            })
+            .catch((error) => {
+              if (error.response.data === 'fail') {
+                alert('장바구니 등록 실패')
+                return
+              } else if (error.response.data === 'duplication') {
+                alert('장바구니에 이미 있습니다.')
+                return
+              } else if (error.response.data === 'Exceeded cnt') {
+                alert('1000 이하 수량을 넣어주세요')
+                return
+              }
+              if (error.response.status === 500) {
+                router.push('errorForm')
+                return
+              }
+            })
         } catch (error) {
           console.error(error)
         }
@@ -226,6 +240,14 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.data === 'fail') {
+              alert('좋아요 삭제 실패')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
       } else {
         axios
@@ -234,14 +256,21 @@ export default {
             console.log(res)
           })
           .catch((error) => {
-            console.log(error)
+            if (error.response.data === 'fail') {
+              alert('좋아요 등록 실패')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
       }
     }
 
     // 상품 디테일 정보
     axios
-      .post('/api/productDetail', { productId: route.query.id })
+      .get('/api/productDetail', { params: { productId: route.query.id } })
       .then((response) => {
         if (response !== undefined) {
           product.value = response.data.productDetail
@@ -255,6 +284,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     // 리뷰 정보 and 리뷰 통계
@@ -268,6 +301,7 @@ export default {
       .get('api/reviewProductDetail', { params: { productId: route.query.id } })
       .then((res) => {
         reviewList.value = res.data
+        console.log(res.data)
 
         if (res.data.length > 0) {
           const reviewSizeList: Array<number> = []
@@ -295,6 +329,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     // 리뷰 통계 구하는 함수 (3개)
@@ -355,6 +393,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     const insertComment = (reviewId: number) => {
@@ -371,6 +413,10 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
       }
     }
@@ -382,6 +428,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     const deleteComment = (commentId: number) => {
@@ -398,6 +448,13 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
+            if (error.response.data === 'fail') {
+              alert('댓글 삭제 실패')
+            }
           })
       }
     }
@@ -433,6 +490,13 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
+            if (error.response.data === 'fail') {
+              alert('댓글 수정 실패')
+            }
           })
       }
     }

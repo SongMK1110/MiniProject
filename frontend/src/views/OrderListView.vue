@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <h1>주문내역 조회</h1>
     <div style="margin: 20px">
@@ -44,6 +45,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
 import OrderList from '../components/OrderList.vue'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Order {
   productId: number
@@ -78,7 +80,8 @@ function formatDate(date: any) {
 export default {
   name: 'OrderListView',
   components: {
-    OrderList
+    OrderList,
+    HeaderView
   },
   setup() {
     const orderList = ref<Order[]>([])
@@ -107,6 +110,16 @@ export default {
       if (endDate.value === undefined) {
         endDate.value = ''
       }
+
+      if (startDate.value !== '' && endDate.value === '') {
+        alert('끝 날짜를 입력 해주세요')
+        return
+      }
+
+      if (endDate.value !== '' && startDate.value === '') {
+        alert('시작 날짜를 입력 해주세요')
+        return
+      }
       axios
         .get('api/searchOrderList', {
           params: { name: searchInput.value, startDate: startDate.value, endDate: endDate.value }
@@ -119,6 +132,17 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          if (error.response.status === 500) {
+            router.push('errorForm')
+            return
+          }
+          if (error.response.data === 'tenYearsAgo') {
+            alert('10년전은 검색 할 수 없습니다.')
+            return
+          } else if (error.response.data === 'nowAfter') {
+            alert('현재 날짜 이후로는 검색 할 수 없습니다.')
+            return
+          }
         })
     }
 
@@ -157,6 +181,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     axios
@@ -166,6 +194,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     const reviewBtn = (productId: number) => {

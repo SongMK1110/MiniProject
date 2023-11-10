@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <div class="black-bg" v-if="modal === true">
       <div class="white-bg">
@@ -147,6 +148,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Address {
   addrId: number
@@ -191,6 +193,9 @@ function getImageUrl(name: string) {
 }
 
 export default {
+  components: {
+    HeaderView
+  },
   setup() {
     const addrList = ref<Address[]>([])
     const addrInfo = ref<Address>()
@@ -216,6 +221,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     const addCommas = (num: number) => {
@@ -224,12 +233,16 @@ export default {
 
     const addRadio = (id: number) => {
       axios
-        .post('/api/selectAddrInfo', { addrId: id })
+        .get('/api/selectAddrInfo', { params: { addrId: id } })
         .then((response) => {
           addrInfo.value = response.data
         })
         .catch((error) => {
           console.log(error)
+          if (error.response.status === 500) {
+            router.push('errorForm')
+            return
+          }
         })
     }
 
@@ -249,17 +262,25 @@ export default {
       }
 
       try {
-        const response = await axios.get('api/selectCartProduct', {
-          params: searchParam
-        })
-        productList.value = response.data
+        await axios
+          .get('api/selectCartProduct', {
+            params: searchParam
+          })
+          .then((response) => {
+            productList.value = response.data
 
-        let sum = 0
-        response.data.forEach((item: any) => {
-          sum += item.price * item.cnt * 0.01
-        })
-        reserves.value = sum
-        console.log(reserves.value)
+            let sum = 0
+            response.data.forEach((item: any) => {
+              sum += item.price * item.cnt * 0.01
+            })
+            reserves.value = sum
+          })
+          .catch((error) => {
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
+          })
       } catch (error) {
         console.error('Error fetching products:', error)
       }
@@ -314,8 +335,6 @@ export default {
               })
 
               const orderDetailResponse = await axios.post('/api/orderDetail', orderDetailData)
-
-              console.log(orderDetailResponse)
 
               if (orderDetailResponse.data === 'success') {
                 console.log('주문이 성공적으로 완료되었습니다.')
@@ -386,6 +405,14 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          if (error.response.data === 'fail') {
+            alert('주소 등록 실패')
+            return
+          }
+          if (error.response.status === 500) {
+            router.push('errorForm')
+            return
+          }
         })
 
       console.log(data)
@@ -399,6 +426,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     watch(useReserves, (newValue) => {

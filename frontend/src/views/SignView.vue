@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <div class="wrapper">
       <div class="title"><h1 style="font-size: 21px">회원가입</h1></div>
@@ -49,9 +50,13 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
+import HeaderView from '@/components/HeaderView.vue'
 
 export default {
   name: 'SignUpView',
+  components: {
+    HeaderView
+  },
   setup() {
     let id = ref<string>('')
     let password = ref<string>('')
@@ -113,27 +118,29 @@ export default {
       console.log(userData)
 
       axios
-        .post('/api/idCheck', { id: id.value })
+        .post('/api/signup', userData)
         .then((response) => {
           console.log(response)
-          if (response.data === 'duplication') {
-            alert('중복된 아이디 입니다.')
-            return false
-          } else if (response.data === 'success') {
-            axios
-              .post('/api/signup', userData)
-              .then((response) => {
-                console.log(response)
-                if (response.data === 'success') {
-                  alert('회원가입 완료')
-                  router.push('/loginForm')
-                }
-              })
-              .catch((error) => {
-                console.error(error)
-              })
+          if (response.data === 'success') {
+            alert('회원가입 완료')
+            router.push('/loginForm')
           }
         })
+        .catch((error) => {
+          console.error(error)
+          if (error.response.data === 'fail') {
+            alert('회원가입 오류')
+            return
+          } else if (error.response.data === 'duplication') {
+            alert('아이디 중복 입니다.')
+            return
+          }
+
+          if (error.response.status === 500) {
+            router.push('errorForm')
+          }
+        })
+
         .catch((error) => {
           console.error(error)
         })

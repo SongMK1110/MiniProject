@@ -63,6 +63,8 @@ public class AuthenticationConfig {
                                                 .permitAll()
                                                 .requestMatchers(new AntPathRequestMatcher("/api/selectReviewComment"))
                                                 .permitAll()
+                                                .requestMatchers(new AntPathRequestMatcher("/api/signup"))
+                                                .permitAll()
                                                 .requestMatchers(new AntPathRequestMatcher("/api/**")).authenticated()
                                                 .anyRequest().permitAll())
                                 // .formLogin(form -> form

@@ -70,6 +70,11 @@ const router = createRouter({
       path: '/searchForm',
       name: 'SearchView',
       component: () => import(/* webpackChunkName: "SearchView" */ '../views/SearchView.vue')
+    },
+    {
+      path: '/errorForm',
+      name: 'ErrorView',
+      component: () => import(/* webpackChunkName: "ErrorView" */ '../views/ErrorView.vue')
     }
 
     // {

@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <h1>좋아요</h1>
     <LikeList
@@ -14,6 +15,8 @@ import LikeList from '@/components/LikeList.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import HeaderView from '@/components/HeaderView.vue'
+import router from '@/router'
 
 interface Cart {
   cartId: number
@@ -72,6 +75,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
     const delCartBtn = (productId: number, index: number): void => {
       const confirmed = window.confirm('삭제하시겠습니까?')
@@ -82,14 +89,21 @@ export default {
             console.log(res)
           })
           .catch((error) => {
-            console.log(error)
+            if (error.response.data === 'fail') {
+              alert('좋아요 삭제 실패')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
         cartItems.value.splice(index, 1)
       }
     }
     return { cartItems, userId, token, route, totalPrice, getImageUrl, delCartBtn, addCommas }
   },
-  components: { LikeList }
+  components: { LikeList, HeaderView }
 }
 </script>
 <style scoped>

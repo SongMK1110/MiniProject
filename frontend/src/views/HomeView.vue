@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <h1>메인 페이지</h1>
     <div class="container">
@@ -22,6 +23,8 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import ProductList from '../components/ProductList.vue'
+import HeaderView from '@/components/HeaderView.vue'
+import router from '@/router'
 
 interface Product {
   productId: number
@@ -57,7 +60,8 @@ function parseJwt(token: string | null): string | null {
 
 export default {
   components: {
-    ProductList
+    ProductList,
+    HeaderView
   },
   setup() {
     const selectedCategory = ref('')
@@ -82,8 +86,17 @@ export default {
       }
 
       try {
-        const response = await axios.get(`/api/productList?categoryId=${category}`)
-        productList.value = response.data
+        await axios
+          .get(`/api/productList?categoryId=${category}`)
+          .then((response) => {
+            productList.value = response.data
+          })
+          .catch((error) => {
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
+          })
       } catch (error) {
         console.error(error)
       }

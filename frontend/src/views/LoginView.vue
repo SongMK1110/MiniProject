@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <h1>로그인 페이지</h1>
     <div>
@@ -14,8 +15,12 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import router from '@/router'
+import HeaderView from '@/components/HeaderView.vue'
 export default {
   name: 'LoginView',
+  components: {
+    HeaderView
+  },
   setup() {
     let id = ref('')
     let password = ref('')
@@ -28,13 +33,6 @@ export default {
       axios
         .post('/api/login', { id: id.value, pw: password.value })
         .then((response) => {
-          if (response.data === 'fail') {
-            alert('아이디 또는 비밀번호가 잘못 되었습니다.')
-            id.value = ''
-            password.value = ''
-            return
-          }
-
           const token = response.data // 서버에서 받은 토큰
           localStorage.setItem('token', token) // 로컬 스토리지에 저장
 
@@ -42,7 +40,17 @@ export default {
           location.href = '/'
         })
         .catch((error) => {
-          console.error(error)
+          console.log(error)
+          if (error.response.data === 'fail') {
+            alert('아이디 또는 비밀번호가 잘못 되었습니다.')
+            id.value = ''
+            password.value = ''
+            return
+          }
+          if (error.response.status === 500) {
+            router.push('errorForm')
+            return
+          }
         })
     }
 

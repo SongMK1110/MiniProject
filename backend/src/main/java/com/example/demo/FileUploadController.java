@@ -15,8 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.member.vo.MemberVO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api")
+@Tag(name = "FileUpload", description = "파일 업로드 API 입니다.")
 public class FileUploadController {
 
     @Autowired
@@ -26,6 +32,14 @@ public class FileUploadController {
     private String uploadPath; // application.properties의 변수
 
     @PostMapping("/uploadImg")
+    @Operation(summary = "파일 업로드", description = "파일 업로드 기능입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "파일 업로드 성공"),
+            @ApiResponse(responseCode = "400", description = "파일 업로드 실패"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 리소스 접근"),
+            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
+
+    })
     public String handleFileUpload(@RequestParam("uploadFile") MultipartFile file, Authentication authentication) {
         if (file.isEmpty()) {
             return "파일을 선택하세요.";

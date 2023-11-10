@@ -21,7 +21,12 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public int addCart(CartVO vo) {
-		return cartMapper.insertCart(vo);
+		int result = cartMapper.cartCheck(vo);
+		if (result > 0) {
+			return -1;
+		} else {
+			return cartMapper.insertCart(vo);
+		}
 	}
 
 	@Override

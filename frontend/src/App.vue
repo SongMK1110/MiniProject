@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
-import HeaderView from './components/HeaderView.vue'
+// import HeaderView from './components/HeaderView.vue'
 declare global {
   interface Window {
     daum: any // 또는 daum: DaumType; (만약 daum의 타입이 정의되어 있다면)
@@ -11,7 +11,7 @@ declare global {
 
 <template>
   <header>
-    <HeaderView />
+    <!-- <HeaderView /> -->
     <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">

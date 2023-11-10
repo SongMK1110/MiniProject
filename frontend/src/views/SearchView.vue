@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <SearchList
       :getImageUrl="getImageUrl"
@@ -14,6 +15,8 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import SearchList from '../components/SearchList.vue'
+import HeaderView from '@/components/HeaderView.vue'
+import router from '@/router'
 
 interface Product {
   productId: number
@@ -46,5 +49,9 @@ axios
   })
   .catch((error) => {
     console.log(error)
+    if (error.response.status === 500) {
+      router.push('errorForm')
+      return
+    }
   })
 </script>

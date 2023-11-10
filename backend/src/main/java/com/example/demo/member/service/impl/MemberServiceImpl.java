@@ -35,7 +35,12 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public int addSignUp(MemberVO vo) {
-		return memberMapper.insertSignUp(vo);
+		int result = memberMapper.selectLoginChk(vo);
+		if (result > 0) {
+			return -1;
+		} else {
+			return memberMapper.insertSignUp(vo);
+		}
 	}
 
 	@Override

@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <h1>후기 작성</h1>
     <div>
@@ -218,6 +219,7 @@ import { ref, reactive } from 'vue'
 import axios from 'axios'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Product {
   productId: number
@@ -235,6 +237,9 @@ function getImageUrl(name: string) {
 
 export default {
   name: 'ReviewView',
+  components: {
+    HeaderView
+  },
   setup() {
     const route = useRoute()
     const productInfo = ref<Product>()
@@ -256,6 +261,10 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
 
     const insertReviewBtn = () => {
@@ -328,6 +337,14 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.data === 'fail') {
+              alert('리뷰 등록 실패')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
       }
     }

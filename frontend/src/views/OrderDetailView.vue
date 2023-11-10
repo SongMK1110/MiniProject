@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div class="order-details">
     <h1>주문 상세 내역</h1>
 
@@ -88,7 +89,7 @@
       </ul>
     </div>
 
-    <div class="payment-method">
+    <div class="payment-method" v-if="orderDetailInfo.length > 0">
       <h2 style="border-bottom: 1px solid #000; padding: 10px">최종 결제 정보</h2>
       <table>
         <tbody>
@@ -144,6 +145,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface OrderDetail {
   orderId: number
@@ -199,13 +201,16 @@ const paymentMethod = (pay: string): string => {
 }
 
 axios
-  .post('api/selectOrderDetailList', { orderId: route.query.orderId })
+  .get('api/selectOrderDetailList', { params: { orderId: route.query.orderId } })
   .then((res) => {
-    console.log(res)
     orderDetailInfo.value = res.data
   })
   .catch((error) => {
     console.log(error)
+    if (error.response.status === 500) {
+      router.push('errorForm')
+      return
+    }
   })
 
 axios
@@ -215,6 +220,10 @@ axios
   })
   .catch((error) => {
     console.log(error)
+    if (error.response.status === 500) {
+      router.push('errorForm')
+      return
+    }
   })
 </script>
 <style scoped>

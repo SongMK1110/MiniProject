@@ -1,4 +1,5 @@
 <template>
+  <header><HeaderView /></header>
   <div>
     <div class="black-bg" v-if="modal === true">
       <div class="white-bg">
@@ -7,7 +8,7 @@
         <div>
           <label for="quantity">수량:</label>
           <button @click="decrementQuantity">-</button>
-          <input type="number" id="quantity" v-model="quantity" readonly />
+          <input type="number" id="quantity" v-model="quantity" />
           <button @click="incrementQuantity">+</button>
         </div>
         <hr />
@@ -66,6 +67,7 @@ import { ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import CartList from '@/components/CartList.vue'
+import HeaderView from '@/components/HeaderView.vue'
 
 interface Cart {
   cartId: number
@@ -117,10 +119,15 @@ export default {
     axios
       .get('/api/cartList')
       .then((response) => {
+        console.log(response)
         cartItems.value = response.data
       })
       .catch((error) => {
         console.log(error)
+        if (error.response.status === 500) {
+          router.push('errorForm')
+          return
+        }
       })
     const delCartBtn = (productId: number, index: number): void => {
       const confirmed = window.confirm('삭제하시겠습니까?')
@@ -130,7 +137,17 @@ export default {
           .then((res) => {
             console.log(res)
           })
-          .catch((error) => console.log(error))
+          .catch((error) => {
+            console.log(error)
+            if (error.response.data === 'fail') {
+              alert('장바구니 삭제 실패')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
+          })
         cartItems.value.splice(index, 1)
       }
     }
@@ -192,6 +209,17 @@ export default {
           })
           .catch((error) => {
             console.log(error)
+            if (error.response.data === 'fail') {
+              alert('장바구니 수정 실패')
+              return
+            } else if (error.response.data === 'Exceeded cnt') {
+              alert('1000 이하 수량을 넣어주세요')
+              return
+            }
+            if (error.response.status === 500) {
+              router.push('errorForm')
+              return
+            }
           })
       }
     }
@@ -215,7 +243,7 @@ export default {
       cartId
     }
   },
-  components: { CartList }
+  components: { CartList, HeaderView }
 }
 </script>
 <style scoped>
